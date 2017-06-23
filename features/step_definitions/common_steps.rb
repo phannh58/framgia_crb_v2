@@ -23,6 +23,12 @@ When(/^I select "([^"]*)" from "([^"]*)"$/) do |value, selector|
   select value, from: selector
 end
 
+When(/^I check the "([^"]*)" checkbox$/) do |checkbox|
+  element = find checkbox
+  expect(element).not_to be_nil
+  element.set true
+end
+
 # To test javascript select2 selector
 When(/^I choose "([^"]*)" from "([^"]*)" selector$/) do |option, selector2|
   find(selector2, visible: :all).click

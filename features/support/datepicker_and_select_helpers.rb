@@ -27,3 +27,10 @@ end
 def click_desired_button number, button
   number.times{|i| button.click}
 end
+
+def select_from_selectbox selectbox, value
+  find(selectbox).click
+  within selectbox do
+    first("option", text: value).click
+  end
+end
