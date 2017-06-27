@@ -6,13 +6,10 @@ module CalendarsHelper
     # btn = render "events/buttons/btn_copy", url: "/events/new?fdata=#{fdata}"
     # btn = "" if event.calendar.is_default? || user_calendar.permission_id == 4
     if Settings.permissions_can_make_change.include? user_calendar.permission_id
-      btn = render "events/buttons/btn_can_make_change",
-        event: event, fdata: fdata
+      render "events/buttons/btn_can_make_change", event: event, fdata: fdata
     elsif user_calendar.permission_id == 3
-      btn = render "events/buttons/btn_detail",
-        url: "/events/#{event.id}"
+      render "events/buttons/btn_detail", url: "/events/#{event.id}"
     end
-    btn.html_safe
   end
 
   def link_via_permission event, fdata = nil
@@ -25,7 +22,7 @@ module CalendarsHelper
     elsif user_calendar.permission_id == 3
       link = render "events/links/link_view", url: "/events/#{event.id}"
     end
-    link.html_safe
+    link
   end
 
   def confirm_popup_repeat_events action

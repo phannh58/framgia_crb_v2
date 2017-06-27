@@ -40,6 +40,7 @@ class CalendarService
   end
 
   private
+
   def generate_repeat_from_event_parent event, function = nil
     if event.repeat_daily?
       repeat_daily event, event.start_repeat.to_date, function
@@ -114,10 +115,10 @@ class CalendarService
   end
 
   def show_repeat_event event, step, start, function = nil
-    ex_destroy_events = Array.new
-    ex_update_events = Array.new
-    ex_edit_follow = Array.new
-    ex_update_follow = Array.new
+    ex_destroy_events = []
+    ex_update_events = []
+    ex_edit_follow = []
+    ex_update_follow = []
 
     if @start_time_view.present?
       if event.end_repeat < @start_time_view.to_date || (@end_time_view.to_date < start)

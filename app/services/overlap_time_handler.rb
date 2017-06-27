@@ -1,6 +1,6 @@
 class OverlapTimeHandler
-  ATTRS = [:overlap_time]
-  attr_accessor *ATTRS
+  ATTRS = [:overlap_time].freeze
+  attr_accessor(*ATTRS)
 
   def initialize event = Event.new
     @event = event
@@ -19,6 +19,7 @@ class OverlapTimeHandler
   end
 
   private
+
   def check_overlap_event events, temp_events
     events.each do |event|
       temp_events.each do |temp_event|
@@ -51,7 +52,7 @@ class OverlapTimeHandler
     elsif db_event.start_date.day == temp_event.start_date.day
       # follow solution at http://wiki.c2.com/?TestIfDateRangesOverlap
       (db_event.start_date < temp_event.finish_date) &&
-      (temp_event.start_date < db_event.finish_date)
+        (temp_event.start_date < db_event.finish_date)
     end
   end
 end

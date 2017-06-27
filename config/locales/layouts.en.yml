@@ -2,14 +2,13 @@ en:
   layouts:
     header:
       room_search: "Search"
-  layout:
-    sign_up: "Sign up"
-    log_in: "Sign in"
-    sign_out: "Sign out"
-  header:
-    profile_setting: "Profile Setting"
-    new_calendar: "New Calendar"
-    new_organization: "New Organization"
+      profile_setting: "Profile Setting"
+      new_calendar: "New Calendar"
+      new_organization: "New Organization"
+      new_event: "New Event"
+      sign_up: "Sign up"
+      log_in: "Sign in"
+      sign_out: "Sign out"
   calendar:
     create_event: "CREATE"
     save: "Save"

@@ -12,7 +12,6 @@ module MakeActivity
       organization = event.calendar.owner.organization
     end
 
-    event.create_activity method, owner: user,
-      recipient: organization
+    event.create_activity method, owner: user, recipient: organization
   end
 end

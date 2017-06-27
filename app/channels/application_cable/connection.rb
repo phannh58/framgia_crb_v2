@@ -10,7 +10,7 @@ module ApplicationCable
     protected
 
     def find_verified_user
-      if current_user = load_user
+      if (current_user = load_user)
         current_user
       else
         reject_unauthorized_connection

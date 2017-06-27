@@ -20,24 +20,10 @@ class CalendarPresenter
   end
 
   def calendars_json
-    all_calendars = calendars.map do |calendar|
-      {
-        id: calendar.id,
-        name: calendar.name,
-        building: calendar.bulding_name,
-        is_allow_overlap: calendar.is_allow_overlap
-      }
-    end
+    all_calendars = calendars.map(&owner_calendar_block)
 
     unless existed_org?
-      all_calendars += shared_calendars.map do |calendar|
-        {
-          id: calendar.id,
-          name: calendar.name,
-          building: "Shared Calendar",
-          is_allow_overlap: calendar.is_allow_overlap
-        }
-      end
+      all_calendars += shared_calendars.map(&share_calendar_block)
     end
     all_calendars.to_json
   end
@@ -74,9 +60,30 @@ class CalendarPresenter
 
   def calendars
     if existed_org?
-      @calendars ||= Calendar.of_org(@organization)
-    else
-      @calendars ||= Calendar.of_user(@user)
+      return @calendars ||= Calendar.of_org(@organization)
+    end
+    @calendars ||= Calendar.of_user(@user)
+  end
+
+  def owner_calendar_block
+    proc do |calendar|
+      {
+        id: calendar.id,
+        name: calendar.name,
+        building: calendar.bulding_name,
+        is_allow_overlap: calendar.is_allow_overlap
+      }
+    end
+  end
+
+  def share_calendar_block
+    proc do |calendar|
+      {
+        id: calendar.id,
+        name: calendar.name,
+        building: "Shared Calendar",
+        is_allow_overlap: calendar.is_allow_overlap
+      }
     end
   end
 end

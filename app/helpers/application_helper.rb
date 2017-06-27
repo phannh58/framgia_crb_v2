@@ -47,7 +47,7 @@ module ApplicationHelper
   def link_to_add_fields field, association
     new_object = field.object.class.reflect_on_association(association).klass.new
     fields = field.fields_for(association, new_object,
-      child_index: t(".new") + "#{association}") do |builder|
+      child_index: t(".new") + association.to_s) do |builder|
       render(association.to_s.singularize + "_fields", f: builder)
     end
     link_to t(".add_workspace"), "javascript:void(0)", class: "btn btn-primary",

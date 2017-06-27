@@ -1,16 +1,15 @@
 module FullCalendar
   class Event
-    alias_method :read_attribute_for_serialization, :send
+    alias read_attribute_for_serialization send
     include SharedMethods
 
     def self.model_name
       @_model_name ||= ActiveModel::Name.new(self)
     end
 
-    ATTRS = [:id, :color_id, :start_date, :finish_date, :event_id, :calendar_id,
-      :calendar_name, :persisted, :event, :editable].freeze
+    ATTRS = %i(id color_id start_date finish_date event_id calendar_id calendar_name persisted event editable).freeze
 
-    attr_accessor *ATTRS
+    attr_accessor(*ATTRS)
 
     delegate :title, :description, :status, :all_day,
       :delete_only?, :delete_all_follow?,
@@ -35,6 +34,7 @@ module FullCalendar
     end
 
     private
+
     def valid_permission_user_in_calendar?
       user_calendar = UserCalendar.find_by(calendar: @calendar, user: @user)
       return false if user_calendar.nil?
