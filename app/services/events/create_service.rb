@@ -27,16 +27,17 @@ module Events
         NotificationWorker.perform_async @event.id
         make_activity @user, @event, :create
       end
-      return status
+      status
     end
 
     private
+
     def event_params
       @params.require(:event).permit ATTRIBUTES_PARAMS
     end
 
     def modify_repeat_params
-      REPEAT_PARAMS.each {|attribute| @params[:event].delete attribute}
+      REPEAT_PARAMS.each{|attribute| @params[:event].delete attribute}
     end
 
     def is_overlap?

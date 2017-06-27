@@ -7,8 +7,7 @@ class TeamsController < ApplicationController
     @team = Team.new
   end
 
-  def show
-  end
+  def show; end
 
   def create
     if @team.save

@@ -1,6 +1,6 @@
 module FullCalendar
   class Event
-    alias :read_attribute_for_serialization :send
+    alias_method :read_attribute_for_serialization, :send
     include SharedMethods
 
     def self.model_name

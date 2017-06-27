@@ -15,7 +15,7 @@ class OverlapTimeHandler
   def valid?
     return true if check_overlap_event @repeat_events, @temp_events
     return true if check_overlap_event @db_events, @temp_events
-    return false
+    false
   end
 
   private
@@ -28,7 +28,7 @@ class OverlapTimeHandler
         end
       end
     end
-    return false
+    false
   end
 
   def generate_db_events calendar_id, parent_id

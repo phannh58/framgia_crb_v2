@@ -5,7 +5,7 @@ class OrganizationsController < ApplicationController
   def show
     @organization_presenter = OrganizationPresenter.new @organization
     @member_paginate = @organization_presenter.members.page(params[:page])
-                       .per Settings.member.per_page
+                                              .per Settings.member.per_page
   end
 
   def new

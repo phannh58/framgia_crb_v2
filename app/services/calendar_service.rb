@@ -125,7 +125,7 @@ class CalendarService
       elsif @start_time_view.to_date > start && (event.daily? || event.weekly?)
         mod = ((@start_time_view.to_date - start).to_i.days % step) / Settings.second_in_day
 
-        if mod == 0
+        if mod.zero?
           repeat_event = [@start_time_view.to_date]
         else
           repeat_event = [@start_time_view.to_date + (step - mod.days)]

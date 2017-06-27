@@ -18,11 +18,12 @@ module Events
     end
 
     def perform
-      @params[:event] = @params[:event].merge({
+      nhash = {
         exception_time: event_params[:start_date],
         start_repeat: start_repeat,
         end_repeat: end_repeat
-      })
+      }
+      @params[:event] = @params[:event].merge(nhash)
 
       if changed_time? && is_overlap? && !@event.calendar.is_allow_overlap?
         return false
@@ -40,6 +41,7 @@ module Events
     end
 
     private
+
     def event_params
       @params.require(:event).permit Event::ATTRIBUTES_PARAMS
     end

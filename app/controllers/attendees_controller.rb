@@ -25,6 +25,7 @@ class AttendeesController < ApplicationController
   end
 
   private
+
   def attendee_params
     params.require(:attendee).permit Attendee::ATTRIBUTES_PARAMS
   end

@@ -10,8 +10,8 @@ class UserOrganizationsController < ApplicationController
   end
 
   def update
-    if @user_organization.update_attributes status: "#{params[:commit]}"
-      redirect_to organizations_path, notice: t(".updated", status: "#{params[:commit]}")
+    if @user_organization.update_attributes status: params[:commit]
+      redirect_to organizations_path, notice: t(".updated", status: params[:commit])
     else
       redirect_to organizations_path, notice: t(".failed")
     end

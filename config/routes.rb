@@ -50,7 +50,6 @@ Rails.application.routes.draw do
     resources :users, only: :index
     resources :events, except: [:edit, :new]
     resources :request_emails, only: :new
-    resources :particular_events, only: [:index, :show]
     get "search" => "searches#index"
     resources :sessions, only: [:create, :destroy]
   end

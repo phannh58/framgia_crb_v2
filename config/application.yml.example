@@ -6,7 +6,7 @@ FACEBOOK_KEY: ""
 FACEBOOK_SECRET: ""
 GOOGLE_KEY: ""
 GOOGLE_SECRET: ""
-CHATWORK_API_KEY: "2bdee2ea1c07e0d3de5a2de2b43e4c30"
+CHATWORK_API_KEY: ""
 development:
   RAILS_ENV: development
   HOST: "localhost:3000"
