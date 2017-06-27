@@ -1,7 +1,7 @@
 class EventGoogle
   ATTRS = [:description, :google_event_id, :google_calendar_id]
 
-  attr_reader *ATTRS
+  attr_reader(*ATTRS)
 
   def initialize event_sync, parent = nil, calendars, default_calendar, current_user
     @event_sync = event_sync

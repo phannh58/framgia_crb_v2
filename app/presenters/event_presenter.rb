@@ -21,22 +21,38 @@ class EventPresenter
 
   private
 
+  def stime_name
+    @start_date.strftime("%I:%M%p")
+  end
+
+  def ftime_name
+    @finish_date.strftime("%I:%M%p")
+  end
+
+  def dsname
+    @start_date.strftime("%A")
+  end
+
+  def dstime_name
+    @start_date.strftime("%d-%m-%Y")
+  end
+
+  def dfname
+    @finish_date.strftime("%A")
+  end
+
+  def dftime_name
+    @start_date.strftime("%m-%d-%Y")
+  end
+
   def make_range_time_title
     @range_time_title = @start_date.strftime("%B %-d %Y")
-    return @range_time_title if @object.all_day?
+    return if @object.all_day?
 
-    stime_name = @start_date.strftime("%I:%M%p")
-    ftime_name = @finish_date.strftime("%I:%M%p")
-    dsname = @start_date.strftime("%A")
-    dstime_name = @start_date.strftime("%d-%m-%Y")
+    @range_time_title = dsname + " " + stime_name + " To " +
+                        ftime_name + " " + dstime_name
+    return if is_one_day?
 
-    if is_one_day?
-      @range_time_title = dsname + " " + stime_name + " To " +
-                          ftime_name + " " + dstime_name
-      return
-    end
-    dfname = @finish_date.strftime("%A")
-    dftime_name = @start_date.strftime("%m-%d-%Y")
     @range_time_title = [dsname, stime_name, dstime_name].join(" ") + " To " +
                         [dfname, ftime_name, dftime_name].join(" ")
   end

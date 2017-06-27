@@ -9,6 +9,7 @@ class EmailWorker
   end
 
   private
+
   def perform_normaly argv
     event_id = argv["event_id"]
     user_id = argv["user_id"]

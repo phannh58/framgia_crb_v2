@@ -1,7 +1,7 @@
 class EventSerializer < ActiveModel::Serializer
   include SharedMethods
 
-  attributes *SHARE_ATTRIBUTES
+  attributes(*SHARE_ATTRIBUTES)
 
   # has_many :attendees
   # has_many :users, through: :attendees

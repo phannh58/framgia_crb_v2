@@ -34,9 +34,9 @@ class OrganizationPresenter
 
   def activities
     @activities = PublicActivity::Activity.order(created_at: :desc)
-                  .where owner_type: User.name,
-                    recipient_type: Organization.name,
-                    recipient_id: @organization.id
+                                          .where owner_type: User.name,
+                                                 recipient_type: Organization.name,
+                                                 recipient_id: @organization.id
     @activities.map{|activity| ActivityPresenter.new activity}
   end
 

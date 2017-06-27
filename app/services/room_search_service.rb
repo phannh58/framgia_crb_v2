@@ -62,7 +62,7 @@ class RoomSearchService
     events = all_events.select{|event| event.calendar_id == calendar_id}
     events.compact!
     return [] if events.blank?
-    events.sort_by &:start_date
+    events.sort_by(&:start_date)
   end
 
   def suggest_time events
