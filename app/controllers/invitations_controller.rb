@@ -1,14 +1,12 @@
 class InvitationsController < ApplicationController
   before_action :load_organization
-  before_action :load_user_org, only: [:show, :edit]
+  before_action :load_user_org, only: %i(show edit)
   before_action :verify_permission!, only: :show
   before_action :load_invited_user, only: :edit
 
-  def show
-  end
+  def show; end
 
-  def edit
-  end
+  def edit; end
 
   def create
     @user_org = @organization.user_organizations.new user_organization_params

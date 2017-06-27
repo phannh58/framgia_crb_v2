@@ -1,11 +1,11 @@
 class CalendarsController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:index]
-  load_and_authorize_resource except: [:index]
-  before_action :load_colors, except: [:show, :destroy]
-  before_action :load_users, :load_permissions, only: [:new, :edit]
-  before_action :load_user_calendar, only: [:edit, :update]
-  before_action :find_owner, only: [:create]
-  before_action only: [:edit, :update] do
+  skip_before_action :authenticate_user!, only: :index
+  load_and_authorize_resource except: :index
+  before_action :load_colors, except: %i(show destroy)
+  before_action :load_users, :load_permissions, only: %i(new edit)
+  before_action :load_user_calendar, only: %i(edit update)
+  before_action :find_owner, only: :create
+  before_action only: %i(edit update) do
     unless current_user.permission_manage? @calendar
       flash[:alert] = t("flash.messages.not_permission")
       redirect_to root_path
@@ -24,8 +24,7 @@ class CalendarsController < ApplicationController
 
     if @calendar.save
       ShareCalendarService.new(@calendar).share_sub_calendar
-      flash[:success] = t "calendar.success_create"
-      redirect_to root_path
+      redirect_to root_path, flash: {success: t("calendar.success_create")}
     else
       load_users
       load_permissions
@@ -49,8 +48,7 @@ class CalendarsController < ApplicationController
 
     if @calendar.update_attributes calendar_params
       ShareCalendarService.new(@calendar).share_sub_calendar
-      flash[:success] = t "calendar.success_update"
-      redirect_to root_path
+      redirect_to root_path, flash: {success: t("calendar.success_update")}
     else
       render :edit
     end
@@ -66,6 +64,7 @@ class CalendarsController < ApplicationController
   end
 
   private
+
   def calendar_params
     params.require(:calendar).permit Calendar::ATTRIBUTES_PARAMS
   end
@@ -96,9 +95,9 @@ class CalendarsController < ApplicationController
   end
 
   def load_owners
-    @owners = [[current_user.name, current_user.name, {"data-owner-type": "User"}]]
+    @owners = [[current_user.name, current_user.name, {"data-owner-type" => "User"}]]
     @owners += current_user.organizations.map do |org|
-      [org.name, org.name, {"data-owner-type": "Organization"}]
+      [org.name, org.name, {"data-owner-type" => "Organization"}]
     end
   end
 end

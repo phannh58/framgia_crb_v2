@@ -16,14 +16,13 @@ class ApplicationController < ActionController::Base
   end
 
   def api
-    str = File.open("#{Rails.root}/doc/api.md").read
+    str = File.open(Rails.root.join("doc", "api.md")).read
 
     str.gsub!(":event_id", Event.all.sample.id.to_s)
-      .gsub!(":auth_token", User.all.sample.auth_token)
+       .gsub!(":auth_token", User.all.sample.auth_token)
 
     str = BlueCloth.new(str).to_html
-    html = to_html(str, "Room Booking API")
-    render text: html.html_safe
+    render text: to_html(str, "Room Booking API")
   end
 
   protected
@@ -38,6 +37,7 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
   def set_locale
     I18n.locale = params[:locale] || I18n.default_locale
   end
@@ -62,13 +62,9 @@ class ApplicationController < ActionController::Base
   end
 
   def store_location
-    return if ["/users/sign_in",
-                "/users/sign_up",
-                "/users/password/new",
-                "/users/password/edit",
-                "/users/confirmation",
-                "/users/sign_out"
-              ].include?(request.path)
+    return if ["/users/sign_in", "/users/sign_up", "/users/password/new",
+               "/users/password/edit", "/users/confirmation",
+               "/users/sign_out"].include?(request.path)
     return if request.xhr?
 
     session["user_return_to"] = request.fullpath
@@ -92,7 +88,6 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  # rubocop:disable LineLength
   def to_html str, title
     <<-HTML
       <html lang="en">
@@ -108,5 +103,4 @@ class ApplicationController < ActionController::Base
       </html>
     HTML
   end
-  # rubocop:enable LineLength
 end

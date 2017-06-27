@@ -2,7 +2,7 @@ module Events
   class ExceptionService
     attr_accessor :new_event
 
-    EXCEPTION_TYPE = ["edit_only", "edit_all", "edit_all_follow"]
+    EXCEPTION_TYPE = %w(edit_only edit_all edit_all_follow)
 
     def initialize event, params
       @event = event
@@ -160,12 +160,12 @@ module Events
       events_edit_all_follow = exception_events.edit_all_follow
       delete_only = exception_events.delete_only.old_exception_edit_all_follow
 
-      if exception_events.present?
-        if events_edit_all_follow.present?
-          @event_params[:end_repeat] = events_edit_all_follow.first.end_repeat
-        elsif delete_only.present?
-          @event_params[:end_repeat] = delete_only.first.end_repeat
-        end
+      return if exception_events.blank?
+
+      if events_edit_all_follow.present?
+        @event_params[:end_repeat] = events_edit_all_follow.first.end_repeat
+      elsif delete_only.present?
+        @event_params[:end_repeat] = delete_only.first.end_repeat
       end
       exception_events
     end

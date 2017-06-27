@@ -2,7 +2,6 @@ class RegistrationsController < Devise::RegistrationsController
   skip_before_action :authenticate_user!, only: [:create]
   respond_to :json
 
-  # rubocop:disable AbcSize, PerceivedComplexity
   def create
     build_resource(sign_up_params)
     resource.save
@@ -10,31 +9,12 @@ class RegistrationsController < Devise::RegistrationsController
 
     if resource.persisted?
       if resource.active_for_authentication?
-        message = find_message(:signed_up)
-        flash[:notice] = message
-        sign_up(resource_name, resource)
-        if request.xhr?
-          return render json: {success: true, data: {message: message}}
-        else
-          respond_with resource, location: after_sign_up_path_for(resource)
-        end
+        handle_with_active_resource resource
       else
-        message = find_message(:"signed_up_but_#{resource.inactive_message}")
-        expire_data_after_sign_in!
-        if request.xhr?
-          return render json: {success: true, data: {message: message}}
-        else
-          respond_with resource, location: after_inactive_sign_up_path_for(resource)
-        end
+        handle_without_active_resource resource
       end
     else
-      clean_up_passwords resource
-      messages = resource.errors.messages
-      if request.xhr?
-        return render json: {success: false, data: {message: messages}}
-      else
-        respond_with resource
-      end
+      handle_without_resource resource
     end
   end
 
@@ -43,5 +23,35 @@ class RegistrationsController < Devise::RegistrationsController
   def after_update_path_for resource
     user_path resource
   end
-  # rubocop:enable AbcSize, PerceivedComplexity
+
+  def handle_without_resource resource
+    clean_up_passwords resource
+    messages = resource.errors.messages
+
+    if request.xhr?
+      return render json: {success: false, data: {message: messages}}
+    end
+    respond_with resource
+  end
+
+  def handle_with_active_resource resource
+    message = find_message(:signed_up)
+    flash[:notice] = message
+    sign_up(resource_name, resource)
+
+    if request.xhr?
+      return render json: {success: true, data: {message: message}}
+    end
+    respond_with resource, location: after_sign_up_path_for(resource)
+  end
+
+  def handle_without_active_resource resource
+    message = find_message(:"signed_up_but_#{resource.inactive_message}")
+    expire_data_after_sign_in!
+
+    if request.xhr?
+      return render json: {success: true, data: {message: message}}
+    end
+    respond_with resource, location: after_inactive_sign_up_path_for(resource)
+  end
 end

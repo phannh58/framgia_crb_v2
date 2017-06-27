@@ -22,6 +22,7 @@ module Events
     end
 
     private
+
     def perform_repeat_event
       exception_type = @params[:exception_type]
       exception_time = @params[:exception_time]
@@ -61,16 +62,15 @@ module Events
     end
 
     def unpersisted_event?
-      @params[:persisted].to_i == 0
+      @params[:persisted].to_i.zero?
     end
 
     def event_exception_pre_nearest parent, exception_time
-      events = parent.event_exceptions
-        .follow_pre_nearest(exception_time).order(start_date: :desc)
+      events = parent.event_exceptions.follow_pre_nearest(exception_time).order(start_date: :desc)
       events.size > 0 ? events.first : parent
     end
 
-    ["delete_all", "delete_all_follow", "delete_only"].each do |action_name|
+    %w(delete_all delete_all_follow delete_only).each do |action_name|
       define_method "#{action_name}?" do
         action_name == @params[:exception_type]
       end

@@ -4,6 +4,7 @@ class ChatworkJob < Struct.new(:event)
   end
 
   private
+
   def send_notification_messages
     @owner = User.find_by id: event.user_id
     ChatWork::Message.create(room_id: Settings.chatwork_room_id,

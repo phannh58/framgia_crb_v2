@@ -84,7 +84,7 @@ class RoomSearchService
   end
 
   def suggest_time_before_event events, index, suggest_start_time
-    if index == 0 || suggest_start_time >= events[index - 1].finish_date
+    if index.zero? || suggest_start_time >= events[index - 1].finish_date
       {
         start_time: suggest_start_time,
         finish_time: events[index].start_date
@@ -102,7 +102,7 @@ class RoomSearchService
   end
 
   def check_room_is_empty? events
-    return true if events.size == 0
+    return true if events.size.zero?
     is_empty = true
     events.each do |event|
       next if event.nil? || @start_time >= event.finish_date || @finish_time <= event.start_date

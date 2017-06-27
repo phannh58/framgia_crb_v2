@@ -19,7 +19,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     redirect_to root_path
   end
 
-  alias_method :facebook, :create
-  alias_method :google_oauth2, :create
-  alias_method :hr_system, :create
+  alias facebook create
+  alias google_oauth2 create
+  alias hr_system create
 end

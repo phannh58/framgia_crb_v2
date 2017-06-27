@@ -1,10 +1,10 @@
 class EventsController < ApplicationController
   include Responsable::Event
-  load_resource except: [:index, :new, :create]
+  load_resource except: %i(index new create)
   authorize_resource
-  skip_before_action :authenticate_user!, only: [:index, :show]
-  before_action :load_calendars, :build_event_params, only: [:new, :edit]
-  before_action only: [:edit, :update, :destroy] do
+  skip_before_action :authenticate_user!, only: %i(index show)
+  before_action :load_calendars, :build_event_params, only: %i(new edit)
+  before_action only: %i(edit update destroy) do
     validate_permission_change_of_calendar @event.calendar
   end
   before_action only: :show do
@@ -47,11 +47,12 @@ class EventsController < ApplicationController
   end
 
   def new
-    if event_id = params[:event][:event_id]
-      @event = Event.find(event_id).dup
-    else
-      @event = Event.new event_params
-    end
+    @event =
+      if params[:event][:event_id]
+        Event.find(params[:event][:event_id]).dup
+      else
+        Event.new event_params
+      end
 
     load_related_data
   end
@@ -113,7 +114,7 @@ class EventsController < ApplicationController
       @event.repeat_ons.find_or_initialize_by days_of_week: days_of_week
     end
 
-    @repeat_ons = @event.repeat_ons.sort{|a, b| a.days_of_week_id <=> b.days_of_week_id}
+    @repeat_ons = @event.repeat_ons.sort_by(&:days_of_week_id)
   end
 
   def build_finish_date hparams
@@ -128,7 +129,7 @@ class EventsController < ApplicationController
     end
 
     begin
-      response = JSON.parse(Base64.decode64 params[:fdata])
+      response = JSON.parse(Base64.decode64(params[:fdata]))
       params[:event] = response
     rescue JSON::ParserError
       params[:event] = {title: ""}
