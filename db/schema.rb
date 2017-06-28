@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170523063556) do
+ActiveRecord::Schema.define(version: 20170628053551) do
 
   create_table "activities", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "trackable_type"
@@ -170,6 +170,8 @@ ActiveRecord::Schema.define(version: 20170523063556) do
     t.integer  "user_organization_id"
     t.datetime "created_at",           null: false
     t.datetime "updated_at",           null: false
+    t.integer  "user_id"
+    t.index ["user_id"], name: "index_permissions_on_user_id", using: :btree
   end
 
   create_table "repeat_ons", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -273,6 +275,7 @@ ActiveRecord::Schema.define(version: 20170523063556) do
 
   add_foreign_key "notification_events", "events"
   add_foreign_key "notification_events", "notifications"
+  add_foreign_key "permissions", "users"
   add_foreign_key "user_teams", "teams"
   add_foreign_key "user_teams", "users"
 end
