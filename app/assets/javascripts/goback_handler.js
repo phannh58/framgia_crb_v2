@@ -1,8 +1,5 @@
-/* global Cookies */
 $(document).on('ready', function() {
-  var btn1 = $('.btn-go-back');
-
-  btn1.on('click', function() {
+  $('.btn-go-back').on('click', function() {
     var cookie = Cookies.get('back');
 
     if(cookie[cookie.length-1] === ';')

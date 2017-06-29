@@ -32,16 +32,14 @@ class Calendar < ApplicationRecord
   validates :owner, presence: true
 
   scope :of_user, ->user do
-    select("calendars.*, uc.user_id, uc.calendar_id, uc.permission_id, \n
-      uc.is_checked, uc.color_id as uc_color_id")
-      .joins("INNER JOIN user_calendars as uc ON calendars.id = uc.calendar_id")
+    select("calendars.*, uc.user_id, uc.calendar_id, uc.permission_id, uc.is_checked, uc.color_id as uc_color_id")
+      .joins("INNER JOIN user_calendars as uc ON calendars.id=uc.calendar_id AND uc.user_id=#{user.id}")
       .where(calendars: {owner_id: user.id, owner_type: User.name})
   end
   scope :shared_with_user, ->user do
-    select("calendars.*, uc.user_id, uc.calendar_id, uc.permission_id, \n
-      uc.is_checked, uc.color_id as uc_color_id")
-      .joins("INNER JOIN user_calendars as uc ON uc.calendar_id = calendars.id")
-      .where("uc.user_id = ? AND calendars.owner_type <> ?", user.id, User.name)
+    select("calendars.*, uc.user_id, uc.calendar_id, uc.permission_id, uc.is_checked, uc.color_id as uc_color_id")
+      .joins("INNER JOIN user_calendars as uc ON uc.calendar_id=calendars.id AND uc.user_id=#{user.id}")
+      .where("(owner_id <> ? AND owner_type = ?) OR owner_type <> ? ", user.id, User.name, User.name)
   end
   scope :managed_by_user, ->user do
     select("calendars.*, uc.user_id, uc.calendar_id, uc.permission_id, \n
