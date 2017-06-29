@@ -59,10 +59,8 @@ class CalendarPresenter
   end
 
   def calendars
-    if existed_org?
-      return @calendars ||= Calendar.of_org(@organization)
-    end
-    @calendars ||= Calendar.of_user(@user)
+    return Calendar.of_org(@organization) if existed_org?
+    Calendar.of_user(@user)
   end
 
   def owner_calendar_block

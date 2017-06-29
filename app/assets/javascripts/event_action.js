@@ -94,7 +94,7 @@ $(document).on('click', '.title-popup', function() {
   titleInput.val(titleInput.attr('data-current-value'));
 });
 
-$(document).click(function() {
+$(document).click(function(event) {
   if ($('.fc-view-container').length === 0)
     return;
 

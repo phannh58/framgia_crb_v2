@@ -14,7 +14,7 @@
 //= require jquery_ujs
 //= require jquery-ui
 //= require moment.min
-//= require moment-timezone-with-data-2010-2020.min
+//= require moment-timezone-with-data-2012-2022
 //= require fullcalendar
 //= require js.cookie
 //= require gcal
@@ -22,7 +22,7 @@
 //= require i18n.js
 //= require i18n/translations
 //= require select2
-//= require btn_back
+//= require goback_handler
 //= require user
 //= require jquery.timepicker
 //= require datepair
@@ -42,6 +42,7 @@
 //= require range_time_select
 //= require room_search
 //= require auto_validate_name
+//= require share_calendar
 
 $(document).on('ready', function() {
   $('.copied').hide();
