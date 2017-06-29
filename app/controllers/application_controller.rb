@@ -48,17 +48,25 @@ class ApplicationController < ActionController::Base
   end
 
   def validate_permission_change_of_calendar calendar
-    return if context_user.permission_make_change?(calendar)
-    return if context_user.permission_manage?(calendar)
-    redirect_to root_path
+    return true if context_user.permission_make_change?(calendar)
+    return true if context_user.permission_manage?(calendar)
+
+    respond_to do |format|
+      format.html{redirect_to root_path, flash: {alert: "You don't have permission for this!!!"}}
+      format.json{render json: {status: 401, message: "You don't have permission for this!!!"}, status: 401}
+    end
+    return
   end
 
   def validate_permission_see_detail_of_calendar calendar
-    return if context_user.has_permission?(calendar)
-    return if context_user.permission_hide_details?(calendar) && !calendar.share_public?
-    return if request.format.json?
+    return true if context_user.has_permission?(calendar)
+    return true if context_user.permission_hide_details?(calendar) && !calendar.share_public?
 
-    redirect_to root_path
+    respond_to do |format|
+      format.html{redirect_to root_path, flash: {alert: "You don't have permission for this!!!"}}
+      format.json{render json: {status: 401, message: "You don't have permission for this!!!"}, status: 401}
+    end
+    return
   end
 
   def store_location

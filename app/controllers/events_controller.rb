@@ -1,10 +1,10 @@
 class EventsController < ApplicationController
   include Responsable::Event
-  load_resource except: %i(index new create)
+  load_resource except: %i(index new)
   authorize_resource
   skip_before_action :authenticate_user!, only: %i(index show)
   before_action :load_calendars, :build_event_params, only: %i(new edit)
-  before_action only: %i(edit update destroy) do
+  before_action only: %i(create edit update destroy) do
     validate_permission_change_of_calendar @event.calendar
   end
   before_action only: :show do
@@ -47,24 +47,20 @@ class EventsController < ApplicationController
   end
 
   def new
-    @event =
-      if params[:event][:event_id]
-        Event.find(params[:event][:event_id]).dup
-      else
-        Event.new event_params
-      end
+    @event = Event.new event_params
+    @event = @event.parent.dup if @event.parent
 
     load_related_data
   end
 
   def create
-    service = Events::CreateService.new current_user, params
-    respond_to do |format|
-      if service.perform
-        response_create_success(service, format)
-      else
-        response_create_fail(service, format)
-      end
+    @event.owner = current_user
+    service = Events::CreateService.new @event, params
+
+    if service.perform
+      response_create_success service
+    else
+      response_create_fail service
     end
   end
 
@@ -78,20 +74,17 @@ class EventsController < ApplicationController
 
   def update
     service = Events::UpdateService.new current_user, @event, params
-    respond_to do |format|
-      if service.perform
-        response_update_success service, format
-      else
-        response_update_fail service, format
-      end
+
+    if service.perform
+      response_update_success service
+    else
+      response_update_fail service
     end
   end
 
   def destroy
     service = Events::DeleteService.new current_user, @event, params
-    respond_to do |format|
-      response_destroy service, format
-    end
+    response_destroy service
   end
 
   private
