@@ -1,4 +1,4 @@
-class CreateNotificationEvents < ActiveRecord::Migration
+class CreateNotificationEvents < ActiveRecord::Migration[5.0]
   def change
     create_table :notification_events do |t|
       t.references :event, index: true, foreign_key: true

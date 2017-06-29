@@ -1,4 +1,6 @@
-class NotificationEmailJob < Struct.new(:event_id, :attendee_ids, :current_user_id)
+NotificationEmailJob = Struct.new(:event_id, :attendee_ids, :current_user_id)
+
+class NotificationEmailJob
   def perform
     attendees = Attendee.joins(:user).where id: attendee_ids
 

@@ -1,4 +1,4 @@
-class CreateDaysOfWeeks < ActiveRecord::Migration
+class CreateDaysOfWeeks < ActiveRecord::Migration[5.0]
   def change
     create_table :days_of_weeks do |t|
       t.string :name

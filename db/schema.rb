@@ -21,11 +21,14 @@ ActiveRecord::Schema.define(version: 20170628053551) do
     t.text     "parameters",     limit: 65535
     t.string   "recipient_type"
     t.integer  "recipient_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
     t.index ["owner_id", "owner_type"], name: "index_activities_on_owner_id_and_owner_type", using: :btree
+    t.index ["owner_type", "owner_id"], name: "index_activities_on_owner_type_and_owner_id", using: :btree
     t.index ["recipient_id", "recipient_type"], name: "index_activities_on_recipient_id_and_recipient_type", using: :btree
+    t.index ["recipient_type", "recipient_id"], name: "index_activities_on_recipient_type_and_recipient_id", using: :btree
     t.index ["trackable_id", "trackable_type"], name: "index_activities_on_trackable_id_and_trackable_type", using: :btree
+    t.index ["trackable_type", "trackable_id"], name: "index_activities_on_trackable_type_and_trackable_id", using: :btree
   end
 
   create_table "attendees", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -58,6 +61,7 @@ ActiveRecord::Schema.define(version: 20170628053551) do
     t.datetime "created_at",                                      null: false
     t.datetime "updated_at",                                      null: false
     t.index ["address"], name: "index_calendars_on_address", unique: true, using: :btree
+    t.index ["color_id"], name: "index_calendars_on_color_id", using: :btree
     t.index ["creator_id"], name: "index_calendars_on_creator_id", using: :btree
     t.index ["name"], name: "index_calendars_on_name", using: :btree
     t.index ["owner_id", "owner_type"], name: "index_calendars_on_owner_id_and_owner_type", using: :btree
@@ -97,6 +101,8 @@ ActiveRecord::Schema.define(version: 20170628053551) do
     t.integer  "team_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["event_id"], name: "index_event_teams_on_event_id", using: :btree
+    t.index ["team_id"], name: "index_event_teams_on_team_id", using: :btree
   end
 
   create_table "events", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -122,9 +128,11 @@ ActiveRecord::Schema.define(version: 20170628053551) do
     t.datetime "created_at",                                       null: false
     t.datetime "updated_at",                                       null: false
     t.datetime "deleted_at"
+    t.index ["calendar_id"], name: "index_events_on_calendar_id", using: :btree
     t.index ["deleted_at"], name: "index_events_on_deleted_at", using: :btree
     t.index ["google_calendar_id"], name: "index_events_on_google_calendar_id", using: :btree
     t.index ["google_event_id"], name: "index_events_on_google_event_id", using: :btree
+    t.index ["user_id"], name: "index_events_on_user_id", using: :btree
   end
 
   create_table "friendly_id_slugs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -172,6 +180,7 @@ ActiveRecord::Schema.define(version: 20170628053551) do
     t.datetime "updated_at",           null: false
     t.integer  "user_id"
     t.index ["user_id"], name: "index_permissions_on_user_id", using: :btree
+    t.index ["user_organization_id"], name: "index_permissions_on_user_organization_id", using: :btree
   end
 
   create_table "repeat_ons", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -179,6 +188,8 @@ ActiveRecord::Schema.define(version: 20170628053551) do
     t.integer  "days_of_week_id"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
+    t.index ["days_of_week_id"], name: "index_repeat_ons_on_days_of_week_id", using: :btree
+    t.index ["event_id"], name: "index_repeat_ons_on_event_id", using: :btree
   end
 
   create_table "settings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -198,6 +209,7 @@ ActiveRecord::Schema.define(version: 20170628053551) do
     t.integer  "organization_id"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
+    t.index ["organization_id"], name: "index_teams_on_organization_id", using: :btree
   end
 
   create_table "user_calendars", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -208,7 +220,11 @@ ActiveRecord::Schema.define(version: 20170628053551) do
     t.boolean  "is_checked",    default: true
     t.datetime "created_at",                   null: false
     t.datetime "updated_at",                   null: false
+    t.index ["calendar_id"], name: "index_user_calendars_on_calendar_id", using: :btree
+    t.index ["color_id"], name: "index_user_calendars_on_color_id", using: :btree
+    t.index ["permission_id"], name: "index_user_calendars_on_permission_id", using: :btree
     t.index ["user_id", "calendar_id"], name: "index_user_calendars_on_user_id_and_calendar_id", unique: true, using: :btree
+    t.index ["user_id"], name: "index_user_calendars_on_user_id", using: :btree
   end
 
   create_table "user_organizations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
