@@ -44,7 +44,7 @@ module FullCalendar
     def assign_attributes
       @start_date = @event.start_date
       @finish_date = @event.finish_date
-      @calendar = @event.calendar
+      @calendar = @event.calendar || NullCalendar.new
       @calendar_name = @calendar.name
       @calendar_id = @calendar.id
       @id = ::Event.generate_unique_secure_token.downcase!

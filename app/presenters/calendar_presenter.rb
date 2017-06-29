@@ -8,15 +8,15 @@ class CalendarPresenter
   end
 
   def my_calendars
-    @my_calendars ||= calendars
+    calendars
   end
 
   def shared_calendars
-    @shared_calendars ||= @user.shared_calendars
+    @user.shared_calendars
   end
 
   def manage_calendars
-    @manage_calendars ||= @user.manage_calendars
+    @user.manage_calendars
   end
 
   def calendars_json
