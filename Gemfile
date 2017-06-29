@@ -69,7 +69,6 @@ group :development, :test do
   gem "rubocop-checkstyle_formatter", require: false
   gem "scss_lint", require: false
   gem "scss_lint_reporter_checkstyle", require: false
-  gem "eslint-rails"
   gem "rails_best_practices"
   gem "reek"
   gem "railroady"

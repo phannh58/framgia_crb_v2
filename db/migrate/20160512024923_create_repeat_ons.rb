@@ -1,4 +1,4 @@
-class CreateRepeatOns < ActiveRecord::Migration
+class CreateRepeatOns < ActiveRecord::Migration[5.0]
   def change
     create_table :repeat_ons do |t|
       t.references :event

@@ -1,4 +1,4 @@
-class CreateEventTeams < ActiveRecord::Migration
+class CreateEventTeams < ActiveRecord::Migration[5.0]
   def change
     create_table :event_teams do |t|
       t.references :event

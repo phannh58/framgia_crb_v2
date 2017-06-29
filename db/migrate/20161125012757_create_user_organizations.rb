@@ -1,4 +1,4 @@
-class CreateUserOrganizations < ActiveRecord::Migration
+class CreateUserOrganizations < ActiveRecord::Migration[5.0]
   def change
     create_table :user_organizations do |t|
       t.integer :status, default: 0

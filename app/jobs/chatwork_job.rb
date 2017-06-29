@@ -1,4 +1,6 @@
-class ChatworkJob < Struct.new(:event)
+ChatworkJob = Struct.new(:event)
+
+class ChatworkJob
   def perform
     send_notification_messages
   end

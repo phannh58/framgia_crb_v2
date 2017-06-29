@@ -1,9 +1,9 @@
-class CreateAttendees < ActiveRecord::Migration
+class CreateAttendees < ActiveRecord::Migration[5.0]
   def change
     create_table :attendees do |t|
       t.string :email
-      t.references :user
-      t.references :event
+      t.integer :user_id
+      t.integer :event_id
       t.integer :status
 
       t.timestamps null: false
