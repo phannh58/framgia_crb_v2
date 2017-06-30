@@ -3,18 +3,17 @@
    user_id, {class: "user_share_ids"} %>
   <%= hidden_field_tag "calendar[user_calendars_attributes][][id]", id,
     {class: "user_calendar_ids"} %>
-  <%= hidden_field_tag "calendar[user_calendars_attributes][][color_id]", color_id,
-    {class: "user_calendar_color_id"} %>
+  <%= hidden_field_tag "calendar[user_calendars_attributes][][color_id]",
+    color_id, {class: "user_calendar_color_id"} %>
   <%= hidden_field_tag "calendar[user_calendars_attributes][][_destroy]",
     false, {class: "user_calendar_destroy"} %>
   <div class="col1"><%= email %></div>
   <div class="col2">
     <%= select_tag "calendar[user_calendars_attributes][][permission_id]",
-      options_from_collection_for_select(permissions, :id, :permission,
-      permission), class: "form-control permission-select" %>
+      options_from_collection_for_select(permissions, :id, :title, permission),
+      class: "form-control permission-select" %>
   </div>
   <div class="col3">
-    <%= image_tag "icon_delete.gif", {id: "#{user_id}",
-      class: "image-remove"} %>
+    <%= image_tag "icon_delete.gif", {id: user_id, class: "image-remove"} %>
   </div>
 </div>

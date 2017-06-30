@@ -5,11 +5,12 @@ class UserOrganization < ApplicationRecord
   after_create :send_invitation_email
 
   delegate :name, :creator_id, to: :organization, prefix: true
-  enum status: [:waiting, :accept]
 
-  ATTRIBUTE_PARAMS = [:organization_id]
+  enum status: %i(waiting accept)
 
-  validates_presence_of :user, :organization
+  ATTRIBUTE_PARAMS = [:organization_id].freeze
+
+  validates :user, :organization, presence: true
 
   private
 

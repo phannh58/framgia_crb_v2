@@ -2,10 +2,26 @@ require "rails_helper"
 require "devise"
 
 RSpec.describe EventsController, type: :controller do
+  before do
+    Fabricate :permission, title: I18n.t("permissions.permission_1"), permission_type: 0
+    Fabricate :permission, title: I18n.t("permissions.permission_2"), permission_type: 1
+    Fabricate :permission, title: I18n.t("permissions.permission_3"), permission_type: 2
+    Fabricate :permission, title: I18n.t("permissions.permission_4"), permission_type: 3
+  end
+
   let!(:user){FactoryGirl.create :user}
-  let!(:calendar) {FactoryGirl.create :calendar, owner: user, creator: user}
-  let!(:event){FactoryGirl.create :event, calendar: calendar, start_date: Time.now - 2.hours,
-    finish_date: Time.now - 1.hours}
+  let!(:calendar) do
+    FactoryGirl.create :calendar,
+      owner: user,
+      creator: user,
+      status: :share_public
+  end
+  let!(:event) do
+    FactoryGirl.create :event,
+      calendar: calendar,
+      start_date: Time.now - 2.hours,
+      finish_date: Time.now - 1.hours
+  end
   before do
     sign_in user
   end

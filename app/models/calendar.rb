@@ -10,55 +10,67 @@ class Calendar < ApplicationRecord
   ATTRIBUTES_PARAMS = [
     :name, :number_of_seats, :google_calendar_id, :description, :color_id,
     :parent_id, :status, :is_allow_overlap,
-    user_calendars_attributes: [
-      :id,
-      :user_id,
-      :permission_id,
-      :color_id,
-      :_destroy
-    ]
+    user_calendars_attributes: %I[id user_id permission_id color_id _destroy]
   ].freeze
 
-  accepts_nested_attributes_for :user_calendars, allow_destroy: true
+  accepts_nested_attributes_for :user_calendars, allow_destroy: true,
+    reject_if: proc{|attributes| attributes["user_id"] == owner_id}
 
   before_create :make_user_calendar
   after_initialize :make_address_uniq, if: "address.nil?"
 
-  enum status: [:no_public, :share_public, :public_hide_detail]
+  enum status: %i(no_public share_public public_hide_detail)
 
   delegate :name, to: :owner, prefix: true, allow_nil: true
 
   validates :address, presence: true, uniqueness: {case_sensitive: false}
   validates :owner, presence: true
 
-  scope :of_user, ->user do
-    select("calendars.*, uc.user_id, uc.calendar_id, uc.permission_id, uc.is_checked, uc.color_id as uc_color_id")
+  scope :of_user, (lambda do |user|
+    select("calendars.*, uc.user_id, uc.calendar_id, p.permission_type, uc.is_checked, uc.color_id as uc_color_id")
       .joins("INNER JOIN user_calendars as uc ON calendars.id=uc.calendar_id AND uc.user_id=#{user.id}")
-      .where(calendars: {owner_id: user.id, owner_type: User.name})
-  end
-  scope :shared_with_user, ->user do
-    select("calendars.*, uc.user_id, uc.calendar_id, uc.permission_id, uc.is_checked, uc.color_id as uc_color_id")
+      .joins("INNER JOIN permissions as p ON p.id = uc.permission_id")
+      .where(
+        calendars: {
+          owner_id: user.id,
+          owner_type: User.name
+        }
+      )
+  end)
+  scope :shared_with_user, (lambda do |user|
+    select("calendars.*, uc.user_id, uc.calendar_id, p.permission_type, uc.is_checked, uc.color_id as uc_color_id")
       .joins("INNER JOIN user_calendars as uc ON uc.calendar_id=calendars.id AND uc.user_id=#{user.id}")
-      .where("(owner_id <> ? AND owner_type = ?) OR owner_type <> ? ", user.id, User.name, User.name)
-  end
-  scope :managed_by_user, ->user do
-    select("calendars.*, uc.user_id, uc.calendar_id, uc.permission_id, \n
-      uc.is_checked, uc.color_id as uc_color_id")
+      .joins("INNER JOIN permissions as p ON p.id = uc.permission_id")
+      .where(
+        "(owner_id <> ? AND owner_type = ?) OR owner_type <> ? ",
+        user.id, User.name, User.name
+      )
+  end)
+  scope :managed_by_user, (lambda do |user|
+    select("calendars.*, uc.user_id, uc.calendar_id, p.permission_type, uc.is_checked, uc.color_id as uc_color_id")
       .joins("INNER JOIN user_calendars as uc ON uc.calendar_id = calendars.id")
-      .where("uc.user_id = #{user.id} AND uc.permission_id IN (1,2)")
-  end
-  scope :of_org, ->org do
+      .joins("INNER JOIN permissions as p ON p.id = uc.permission_id")
+      .where(
+        "uc.user_id = ? AND p.permission_type IN (?)",
+        user.id,
+        [
+          Permission.permission_types[:make_changes_and_manage_sharing],
+          Permission.permission_types[:make_changes_to_events]
+        ]
+      )
+  end)
+  scope :of_org, (lambda do |org|
     if org
-      select("calendars.*, uc.user_id, uc.calendar_id, uc.permission_id, \n
-      uc.is_checked, uc.color_id as uc_color_id")
+      select("calendars.*, uc.user_id, uc.calendar_id, p.permission_type, uc.is_checked, uc.color_id as uc_color_id")
         .joins("INNER JOIN user_calendars as uc ON uc.calendar_id = calendars.id")
-        .where("(calendars.owner_type = ? AND calendars.owner_id = ?) \n
+        .joins("INNER JOIN permissions as p ON p.id = uc.permission_id")
+        .where("(calendars.owner_type = ? AND calendars.owner_id = ?)
           OR (calendars.owner_type = ? AND calendars.owner_id IN (?))",
           Organization.name, org.id, Workspace.name, org.workspace_ids)
     else
       Calendar.none
     end
-  end
+  end)
 
   def get_color user_id
     user_calendar = user_calendars.find_by user_id: user_id
@@ -75,8 +87,10 @@ class Calendar < ApplicationRecord
   end
 
   private
+
   def make_user_calendar
-    user_calendars.new user_id: creator_id, permission_id: 1,
+    user_calendars.new user_id: creator_id,
+      permission: Permission.make_changes_and_manage_sharing.first,
       color_id: color_id
   end
 

@@ -1,16 +1,10 @@
 class CalendarsController < ApplicationController
   skip_before_action :authenticate_user!, only: :index
   load_and_authorize_resource except: :index
+  before_action :verify_permission, only: %i(edit update)
   before_action :load_colors, except: %i(show destroy)
   before_action :load_users, :load_permissions, only: %i(new edit)
-  before_action :load_user_calendar, only: %i(edit update)
   before_action :find_owner, only: :create
-  before_action only: %i(edit update) do
-    unless current_user.permission_manage? @calendar
-      flash[:alert] = t("flash.messages.not_permission")
-      redirect_to root_path
-    end
-  end
 
   def index
     @organization = Organization.find_by slug: params[:organization_id]
@@ -23,7 +17,7 @@ class CalendarsController < ApplicationController
     @calendar.owner = @owner
 
     if @calendar.save
-      ShareCalendarService.new(@calendar).share_sub_calendar
+      # ShareCalendarService.new(@calendar).share_sub_calendar
       redirect_to root_path, flash: {success: t("calendar.success_create")}
     else
       load_users
@@ -44,10 +38,8 @@ class CalendarsController < ApplicationController
   end
 
   def update
-    @calendar.status = "no_public" unless calendar_params[:status]
-
     if @calendar.update_attributes calendar_params
-      ShareCalendarService.new(@calendar).share_sub_calendar
+      # ShareCalendarService.new(@calendar).share_sub_calendar
       redirect_to root_path, flash: {success: t("calendar.success_update")}
     else
       render :edit
@@ -81,10 +73,6 @@ class CalendarsController < ApplicationController
     @permissions = Permission.all
   end
 
-  def load_user_calendar
-    @user_calendar = @calendar.user_calendars.find_by user_id: current_user.id
-  end
-
   def find_owner
     case params[:owner_type]
     when Organization.name
@@ -99,5 +87,11 @@ class CalendarsController < ApplicationController
     @owners += current_user.organizations.map do |org|
       [org.name, org.name, {"data-owner-type" => "Organization"}]
     end
+  end
+
+  def verify_permission
+    return if context_user.can_make_changes_and_manage_sharing?(@calendar)
+    flash[:alert] = t("flash.messages.not_permission")
+    redirect_to root_path
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170628053551) do
+ActiveRecord::Schema.define(version: 20170523063556) do
 
   create_table "activities", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "trackable_type"
@@ -174,13 +174,10 @@ ActiveRecord::Schema.define(version: 20170628053551) do
   end
 
   create_table "permissions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string   "permission"
-    t.integer  "user_organization_id"
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
-    t.integer  "user_id"
-    t.index ["user_id"], name: "index_permissions_on_user_id", using: :btree
-    t.index ["user_organization_id"], name: "index_permissions_on_user_organization_id", using: :btree
+    t.string   "title"
+    t.integer  "permission_type"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
   end
 
   create_table "repeat_ons", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -291,7 +288,6 @@ ActiveRecord::Schema.define(version: 20170628053551) do
 
   add_foreign_key "notification_events", "events"
   add_foreign_key "notification_events", "notifications"
-  add_foreign_key "permissions", "users"
   add_foreign_key "user_teams", "teams"
   add_foreign_key "user_teams", "users"
 end

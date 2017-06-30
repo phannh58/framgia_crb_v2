@@ -17,7 +17,7 @@ RSpec.describe Calendar, type: :model do
   it{should validate_presence_of :owner}
 
   it "should have a valid fabricator" do
-    user = Fabricate :user 
+    user = Fabricate :user
     expect(Fabricate :calendar, owner: user).to be_valid
   end
 
@@ -78,18 +78,6 @@ RSpec.describe Calendar, type: :model do
       calendar = Calendar.new name: "meeting", owner: user2
       expect(calendar).to receive :make_user_calendar
       calendar.save
-    end
-
-    it "should create user_calendar with proper value" do
-      calendar.user_calendars = []
-      calendar.send :make_user_calendar
-      expect{calendar.save}.to change{calendar
-        .user_calendars.count}.by 1
-      user.save
-      user_calendar = calendar.user_calendars.last
-      expect(user_calendar.user_id).to eq calendar.creator_id
-      expect(user_calendar.permission_id).to eq 1
-      expect(user_calendar.color_id).to eq calendar.color_id
     end
   end
 
