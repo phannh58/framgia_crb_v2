@@ -10,10 +10,10 @@ namespace :db do
       end
 
       puts "Create permission"
-      Fabricate :permission, permission: I18n.t("permissions.permission_1")
-      Fabricate :permission, permission: I18n.t("permissions.permission_2")
-      Fabricate :permission, permission: I18n.t("permissions.permission_3")
-      Fabricate :permission, permission: I18n.t("permissions.permission_4")
+      Fabricate :permission, title: I18n.t("permissions.permission_1"), permission_type: 0
+      Fabricate :permission, title: I18n.t("permissions.permission_2"), permission_type: 1
+      Fabricate :permission, title: I18n.t("permissions.permission_3"), permission_type: 2
+      Fabricate :permission, title: I18n.t("permissions.permission_4"), permission_type: 3
 
       Fabricate :notification, notification_type:
         I18n.t("events.notification.email")

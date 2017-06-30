@@ -30,19 +30,9 @@ class NullUser
     @org.try :setting_timezone_name
   end
 
-  def permission_make_change? _
-    false
-  end
-
-  def permission_manage? _
-    false
-  end
-
-  def has_permission? _
-    false
-  end
-
-  def permission_hide_details? _
-    false
+  Permission.permission_types.each_key do |permission_type|
+    define_method("can_#{permission_type}?") do |_calendar|
+      return false
+    end
   end
 end

@@ -6,7 +6,7 @@ class UserOrganizationsController < ApplicationController
     org_id = params[:user_organization][:organization_id]
     user_org_params = {user_id: user_ids, organization_id: org_id}
     @user_organization = UserOrganization.create user_org_params
-    redirect_to :back, notice: t(".invited")
+    redirect_back(fallback_location: root_path, notice: t(".invited"))
   end
 
   def update

@@ -1,4 +1,4 @@
 Fabricator :permission do
-  permission "Select"
-  user
+  title "Select"
+  permission_type 1
 end

@@ -61,9 +61,12 @@ class User < ApplicationRecord
     Calendar.managed_by_user self
   end
 
-  Settings.permissions.each_with_index do |action, permission|
-    define_method("permission_#{action}?") do |calendar|
-      user_calendars.find_by calendar: calendar, permission_id: permission + 1
+  Permission.permission_types.each_key do |permission_type|
+    define_method("can_#{permission_type}?") do |calendar|
+      user_calendar = user_calendars.find_by calendar: calendar
+      return false unless user_calendar
+
+      return user_calendar.permission.send("#{permission_type}?")
     end
   end
 

@@ -5,7 +5,7 @@
       tabindex="0" role="button" google_calendar_id="<%= calendar.google_calendar_id %>"></div>
     <%= calendar.name %>
   </label>
-  <% if user_signed_in? && calendar.permission_id == 1 %>
+  <% if context_user.can_make_changes_and_manage_sharing?(calendar) %>
     <span id="<%= calendar.id %>" selected_color_id="<%= calendar.uc_color_id %>"
       class="clst-menu clst-menu-child" rel="<%= calendar.uc_color_id %>">
       <% unless calendar.parent? %>

@@ -4,12 +4,9 @@ class UserCalendar < ApplicationRecord
   belongs_to :permission
   belongs_to :color
 
-  delegate :sub_calendars, to: :calendar, allow_nil: true
+  validates :permission, :user, :calendar, presence: true
+
   delegate :email, :name, to: :user, prefix: true, allow_nil: true
 
-  scope :get_user_calendar, ->user_id, calendar_id do
-    where("user_id = ? AND calendar_id = ?", user_id, calendar_id)
-  end
-
-  ATTR_PARAMS = [:user_id, :permission_id, :color_id, :is_checked]
+  ATTR_PARAMS = %i(user_id permission_id color_id is_checked).freeze
 end

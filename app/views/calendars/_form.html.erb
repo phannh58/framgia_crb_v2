@@ -123,7 +123,7 @@
       <div class="col2">
         <div class="add-user-share-col2">
           <%= collection_select :permission, :id, @permissions,
-            :id, :permission, {selected: 3},
+            :id, :title, {selected: 3},
             class: "form-control permission-select", id: "permission-select" %>
         </div>
         <button type="button" id="add-person" class="btn add-person-btn btn-primary">

@@ -48,8 +48,8 @@ class ApplicationController < ActionController::Base
   end
 
   def validate_permission_change_of_calendar calendar
-    return true if context_user.permission_make_change?(calendar)
-    return true if context_user.permission_manage?(calendar)
+    return true if context_user.can_make_changes_and_manage_sharing?(calendar)
+    return true if context_user.can_make_changes_to_events?(calendar)
 
     respond_to do |format|
       format.html{redirect_to root_path, flash: {alert: "You don't have permission for this!!!"}}
@@ -59,8 +59,10 @@ class ApplicationController < ActionController::Base
   end
 
   def validate_permission_see_detail_of_calendar calendar
-    return true if context_user.has_permission?(calendar)
-    return true if context_user.permission_hide_details?(calendar) && !calendar.share_public?
+    return true unless context_user.can_make_changes_and_manage_sharing?(calendar)
+    return true unless context_user.can_make_changes_to_events?(calendar)
+    return true unless context_user.can_see_all_event_details?(calendar)
+    return true if calendar.share_public?
 
     respond_to do |format|
       format.html{redirect_to root_path, flash: {alert: "You don't have permission for this!!!"}}
