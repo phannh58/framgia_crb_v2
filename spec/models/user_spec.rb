@@ -74,15 +74,8 @@ RSpec.describe User, type: :model do
     end
 
     it "should return users order by email in ascending" do
-      expect(User.order_by_email).to eq([third_user,
-        first_user, second_user])
-      expect(User.order_by_email).not_to eq([second_user,
-        first_user, third_user])
-    end
-
-    it "should return users who can invite to organization" do
-      expect(User.can_invite_to_organization(1))
-        .not_to eq(organization_user.user_id)
+      expect(User.order_by_email).to eq([third_user, first_user, second_user])
+      expect(User.order_by_email).not_to eq([second_user, first_user, third_user])
     end
   end
 
@@ -116,16 +109,6 @@ RSpec.describe User, type: :model do
       it "returns boolean indicating whether a record is of type User" do
         expect(first_user.is_user?(first_user)).to eq true
         expect(first_user.is_user?(first_calendar)).not_to eq true
-      end
-    end
-  end
-
-  describe "instance methods" do
-    let!(:first_user) {FactoryGirl.create(:user, email: "ttt@gmail.com")}
-    context ".existed_email?(email)" do
-      it "returns boolean indicating whether an email exists" do
-        expect(User.existed_email?(first_user.email)).to eq true
-        expect(User.existed_email?(first_user.email)).not_to eq false
       end
     end
   end

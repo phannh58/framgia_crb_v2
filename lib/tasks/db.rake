@@ -15,12 +15,9 @@ namespace :db do
       Fabricate :permission, title: I18n.t("permissions.permission_3"), permission_type: 2
       Fabricate :permission, title: I18n.t("permissions.permission_4"), permission_type: 3
 
-      Fabricate :notification, notification_type:
-        I18n.t("events.notification.email")
-      Fabricate :notification, notification_type:
-        I18n.t("events.notification.chatwork")
-      Fabricate :notification, notification_type:
-        I18n.t("events.notification.desktop")
+      Fabricate :notification, notification_type: I18n.t("events.notification.email")
+      Fabricate :notification, notification_type: I18n.t("events.notification.chatwork")
+      Fabricate :notification, notification_type: I18n.t("events.notification.desktop")
 
       user_hash = [
         {
@@ -61,7 +58,6 @@ namespace :db do
       org = Fabricate :organization, name: "Framgia", creator_id: User.first.id
       org.create_setting country: "VN",
         timezone_name: ActiveSupport::TimeZone.all.sample.name
-      org.users << User.all
 
       [
         {

@@ -8,5 +8,5 @@ class UserCalendar < ApplicationRecord
 
   delegate :email, :name, to: :user, prefix: true, allow_nil: true
 
-  ATTR_PARAMS = %i(user_id permission_id color_id is_checked).freeze
+  ATTR_PARAMS = %i(color_id is_checked).freeze
 end

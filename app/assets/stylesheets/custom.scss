@@ -486,14 +486,17 @@ input[type=checkbox] {
 }
 
 /*Invite user to organization*/
-.search-user.loading {
-  background-image: url(image-path('loading-validate.gif'));
-  background-position: right 10px center;
-  background-repeat: no-repeat;
-}
 
 .search-user {
+  border-bottom-right-radius: 2px;
+  border-top-right-radius: 2px;
   padding-left: 30px;
+
+  &.loading {
+    background-image: url(image-path('loading-validate.gif'));
+    background-position: right 10px center;
+    background-repeat: no-repeat;
+  }
 }
 
 .user-icon {
@@ -506,8 +509,8 @@ input[type=checkbox] {
 }
 
 .name-list:focus {
-  color: white;
   background: $chambray-color;
+  color: white;
 }
 
 .name-list:hover {
@@ -515,6 +518,19 @@ input[type=checkbox] {
 }
 
 .ul-list-user {
-  padding: 0px;
-  margin: 0px;
+  margin: 0;
+  padding: 0;
+}
+
+#error_explanation {
+  color: $red-color;
+
+  ul {
+    list-style-type: disc;
+    margin: 0 0 18px;
+  }
+}
+
+.modal-dialog {
+  margin: 0 auto;
 }

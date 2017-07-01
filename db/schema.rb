@@ -178,6 +178,7 @@ ActiveRecord::Schema.define(version: 20170523063556) do
     t.integer  "permission_type"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
+    t.index ["permission_type"], name: "index_permissions_on_permission_type", unique: true, using: :btree
   end
 
   create_table "repeat_ons", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

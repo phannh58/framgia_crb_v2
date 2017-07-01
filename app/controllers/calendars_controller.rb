@@ -1,7 +1,7 @@
 class CalendarsController < ApplicationController
   skip_before_action :authenticate_user!, only: :index
   load_and_authorize_resource except: :index
-  before_action :verify_permission, only: %i(edit update)
+  before_action :verify_permission!, only: %i(edit update)
   before_action :load_colors, except: %i(show destroy)
   before_action :load_users, :load_permissions, only: %i(new edit)
   before_action :find_owner, only: :create
@@ -17,7 +17,6 @@ class CalendarsController < ApplicationController
     @calendar.owner = @owner
 
     if @calendar.save
-      # ShareCalendarService.new(@calendar).share_sub_calendar
       redirect_to root_path, flash: {success: t("calendar.success_create")}
     else
       load_users
@@ -39,7 +38,6 @@ class CalendarsController < ApplicationController
 
   def update
     if @calendar.update_attributes calendar_params
-      # ShareCalendarService.new(@calendar).share_sub_calendar
       redirect_to root_path, flash: {success: t("calendar.success_update")}
     else
       render :edit
@@ -89,7 +87,7 @@ class CalendarsController < ApplicationController
     end
   end
 
-  def verify_permission
+  def verify_permission!
     return if context_user.can_make_changes_and_manage_sharing?(@calendar)
     flash[:alert] = t("flash.messages.not_permission")
     redirect_to root_path

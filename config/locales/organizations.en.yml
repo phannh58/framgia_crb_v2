@@ -70,18 +70,6 @@ en:
     modal_search_user:
       placeholder:
         search_email_name: "Search by username, full name or email address"
-  invites:
-    show:
-      invite_placeholder: "Name or email"
-      invite_to: "Invite member to %{name}"
-      invite_by: "Name or email"
-      invite: "Invite"
-      no_permission: "You have no permission."
-      finish: "Finish"
-  invitations:
-    show:
-      invited: "You has invited you to join the %{name} organization."
-      no_permission: "You have no permission."
   user_organizations:
     create:
       invited: "Your invitation has been sent."

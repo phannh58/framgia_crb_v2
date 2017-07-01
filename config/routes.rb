@@ -2,7 +2,6 @@ Rails.application.routes.draw do
   # Serve websocket cable requests in-process
   mount ActionCable.server => "/cable"
 
-  get "search_user/index"
   get "/api"  => "application#api"
 
   devise_for :users,
@@ -20,38 +19,39 @@ Rails.application.routes.draw do
     root "home#show", as: :unauthenticated_root
   end
 
-  resources :search, only: [:index]
-  resources :users, only: :show
+  resources :search, only: %i(index)
+  resources :users, only: %i(show) do
+    collection do
+      get :search
+    end
+  end
   resources :calendars do
     collection do
       get :search, to: "calendars/search#show"
     end
   end
-  resources :share_calendars, only: :new
   resources :events
-  resource :multi_events, only: [:create]
-  resources :attendees, only: [:create, :destroy]
-  resources :particular_calendars, only: [:show, :update]
+  resources :share_calendars, only: %(new)
+  resource :multi_events, only: %(create)
+  resources :attendees, only: %i(create destroy)
+  resources :particular_calendars, only: %i(show update)
   resources :organizations, path: "orgs" do
-    resources :activities, only: [:index]
-    resources :calendars, only: [:index]
-    resource :invite, only: :show
-    resource :invitation do
-      get ":id/edit", action: :edit, as: :member
-      patch ":id", action: :update
-      delete ":id", action: :destroy
-    end
     resources :teams
+    resources :activities, only: %i(index)
+    resources :members, only: %i(index)
+    resources :calendars, only: %i(index)
+    resource :invitations, only: %i(show create update destroy) do
+      get ":id/edit", action: :edit, as: :member
+    end
   end
-  resources :user_organizations
 
   namespace :api do
-    resources :calendars, only: [:update, :new]
-    resources :users, only: :index
-    resources :events, except: [:edit, :new]
-    resources :request_emails, only: :new
+    resources :calendars, only: %i(update new)
+    resources :users, only: %(index)
+    resources :events, except: %i(edit new)
+    resources :request_emails, only: %i(new)
     get "search" => "searches#index"
-    resources :sessions, only: [:create, :destroy]
+    resources :sessions, only: %i(create destroy)
   end
-  resource :check_names, only: :show
+  resource :check_names, only: %i(show)
 end

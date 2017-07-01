@@ -14,7 +14,7 @@ class Calendar < ApplicationRecord
   ].freeze
 
   accepts_nested_attributes_for :user_calendars, allow_destroy: true,
-    reject_if: proc{|attributes| attributes["user_id"] == owner_id}
+    reject_if: proc{|attributes| attributes["user_id"] == @owner_id}
 
   before_create :make_user_calendar
   after_initialize :make_address_uniq, if: "address.nil?"

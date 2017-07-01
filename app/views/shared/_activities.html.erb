@@ -1,5 +1,5 @@
-<div class="col-sm-7">
-  <% @activities.each do |activity| %>
+<ul class="media">
+  <% activities.each do |activity| %>
     <% if activity.key == "event.create" %>
       <%= render partial: "public_activity/event/create", locals: {activity: activity} %>
     <% elsif activity.key == "event.update" %>
@@ -8,7 +8,8 @@
       <%= render partial: "public_activity/event/destroy", locals: {activity: activity} %>
     <% end %>
   <% end %>
-  <div class="paginator pagination-activities">
-    <%= paginate @activities, param_name: :activities %>
-  </div>
+</ul>
+
+<div class="paginator activities">
+  <%= paginate activities, param_name: :activities %>
 </div>

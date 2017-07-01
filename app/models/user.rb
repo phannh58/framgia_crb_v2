@@ -31,23 +31,16 @@ class User < ApplicationRecord
   before_create :build_calendar
   before_create :generate_authentication_token!
 
-  scope :search, ->q{where "email LIKE ?", "%#{q}%"}
-  scope :search_name_or_email, ->q{where "name LIKE ? OR email LIKE ?", "%#{q}%", "%#{q}%"}
+  scope :search, ->q{where "email LIKE ?", "%#{sanitize_sql_like q}%"}
+  scope :search_name_or_email, (lambda do |q|
+    where "name LIKE ? OR email LIKE ?", "%#{sanitize_sql_like q}%", "%#{sanitize_sql_like q}%"
+  end)
   scope :order_by_email, ->{order email: :asc}
-  scope :can_invite_to_organization, (lambda do |organization_id|
-    where NOT_YET_INVITE, organization_id
-  end)
-  scope :accepted_invite, (lambda do |q|
-    joins(:user_organizations)
-    .where("user_organizations.status = 1 AND user_organizations.organization_id = ?", "#{q}")
-  end)
+
   accepts_nested_attributes_for :setting
 
   ATTR_PARAMS = [:name, :email, :chatwork_id, :password, :password_confirmation,
     setting_attributes: [:id, :timezone_name, :default_view, :country]].freeze
-
-  NOT_YET_INVITE = "id NOT IN (SELECT DISTINCT user_organizations.user_id
-    FROM user_organizations WHERE user_organizations.organization_id = ?)"
 
   def my_calendars
     Calendar.of_user self
@@ -83,10 +76,6 @@ class User < ApplicationRecord
   end
 
   class << self
-    def existed_email? email
-      User.pluck(:email).include? email
-    end
-
     def from_omniauth auth
       user = find_or_initialize auth
 

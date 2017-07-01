@@ -1,3 +1,5 @@
+<%= render partial: "shared/control_action", locals: {f: nil, partials: []} %>
+
 <div class="tbl-object">
   <%= image_tag @org.logo_url, class: "avatar tbl-item" %>
   <div class="tbl-item tbl-item-primary infor-organization">
@@ -11,32 +13,28 @@
 </div>
 
 <div class="tabs">
-  <ul class="nav nav-tabs">
+  <ul class="nav nav-tabs" id="invitation-tabs">
+    <li>
+      <a href="<%= organization_path(@org) %>#calendars">
+        <%= t ".calendars" %>
+      </a>
+    </li>
     <li class="active">
-      <a href="#workspaces" data-toggle="tab"><%= t ".workspaces" %></a>
+      <a href="<%= organization_path(@org) %>#members">
+        <%= t ".members" %>
+      </a>
     </li>
     <li>
-      <a href="#calendars" data-toggle="tab"><%= t ".calendars" %></a>
+      <a href="<%= organization_path(@org) %>#activities">
+        <%= t ".activities" %>
+      </a>
     </li>
-    <li>
-      <a href="#members" data-toggle="tab"><%= t ".members" %></a>
-    </li>
-    <li><a href="#activities" data-toggle="tab"><%= t ".activities" %></a></li>
   </ul>
 </div>
 <div class="tab-content">
-  <div class="tab-pane fade" id="workspaces">
-  </div>
-  <div class="tab-pane fade" id="calendars">
-    <h2><%= t ".calendars" %></h2>
-  </div>
-  <div class="tab-pane fade" id="members">
+  <div class="tab" id="members">
     <div class="member">
       <%= render "invite_member" %>
     </div>
-    <div class="paginator">
-    </div>
-  </div>
-  <div class="tab-pane fade" id="activities">
   </div>
 </div>

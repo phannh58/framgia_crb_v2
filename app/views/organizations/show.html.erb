@@ -14,19 +14,18 @@
 </div>
 
 <div class="tabs">
-  <ul class="nav nav-tabs">
+  <ul class="nav nav-tabs" id="organization-tabs">
     <li class="active">
-      <a href="#calendars" data-toggle="tab">Calendars</a>
+      <a href="#calendars">Calendars</a>
     </li>
     <li>
-      <a href="#members" data-toggle="tab">Members</a>
+      <a href="#members">Members</a>
     </li>
     <li>
       <%= link_to "Activities", "#activities",
         data: {
           tab: "activities",
-          toggle: "tab",
-          url: organization_path + "/activities"
+          url: organization_path + "/activities.json"
         } %>
     </li>
   </ul>

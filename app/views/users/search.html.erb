@@ -1,0 +1,47 @@
+<% if @users.any? %>
+  <div class="list-user text-left">
+    <ul class="col-md-12 col-xs-12 ul-list-user">
+      <% @users.each do |user| %>
+        <li>
+          <% if user.status && user.status == UserOrganization.statuses[:accepted] %>
+            <%= link_to "javascript:void(0)", class: "name-list" do %>
+              <div class="media">
+                <div class="media-left">
+                  <%= image_tag user.avatar_url, class: "img-user" %>
+                </div>
+                <div class="media-body">
+                  <p class="media-heading"><%= user.name %></p>
+                  <p class="text-gray">
+                    <small>Already in this organization</small>
+                  </p>
+                </div>
+                <div class="media-right">
+                  <span class="pull-right">
+                    <i class="fa fa-check" aria-hidden="true"></i>
+                  </span>
+                </div>
+              </div>
+            <% end %>
+          <% else %>
+            <%= link_to member_organization_invitations_path(id: user.slug,
+              organization_id: params[:org_slug]), class: "name-list" do %>
+              <div class="media">
+                <div class="media-left">
+                  <%= image_tag user.avatar_url, class: "img-user" %>
+                </div>
+                <div class="media-body">
+                  <p class="media-heading"><%= user.name %></p>
+                </div>
+                <div class="media-right">
+                  <span class="pull-right">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                  </span>
+                </div>
+              </div>
+            <% end %>
+          <% end %>
+        </li>
+      <% end  %>
+    </ul>
+  </div>
+<% end %>

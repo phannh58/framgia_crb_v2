@@ -1,39 +1,37 @@
-<div class="row">
-  <% @organization_presenter.direct_calendars.each do |calendar| %>
-    <%= link_to "javascript:void(0)" do %>
-      <div class="media calendar">
-        <div class="media-left">
-          <span class="color-<%= calendar.color_id %> media-left-color-id" ></span>
-        </div>
-        <div class="media-body">
-          <span class="media-body-calendar-name"><%= calendar.name %></span>
-        </div>
-      </div>
-    <% end %>
-  <% end %>
-
-  <% @organization_presenter.workspace_calendars.each do |workspace, calendars| %>
-    <div class="workspace">
-      <div class="media workspace-infor">
-        <div class="media-left">
-          <span class="color-8">
-            <%= image_tag workspace.logo_url,
-              size: Settings.workspace.logosize %>
-          </span>
-        </div>
-        <div class="media-body">
-          <span class="media-body-workspace-name"><%= workspace.name %></span>
-        </div>
-      </div>
-    </div>
-
-    <div class="media sub-calendar">
+<% @organization_presenter.direct_calendars.each do |calendar| %>
+  <%= link_to "javascript:void(0)" do %>
+    <div class="media calendar">
       <div class="media-left">
-        <span class="hidden-box"></span>
+        <span class="color-<%= calendar.color_id %> media-left-color-id" ></span>
       </div>
       <div class="media-body">
-        <%= render partial: "organizations/calendar", collection: calendars %>
+        <span class="media-body-calendar-name"><%= calendar.name %></span>
       </div>
     </div>
   <% end %>
-</div>
+<% end %>
+
+<% @organization_presenter.workspace_calendars.each do |workspace, calendars| %>
+  <div class="workspace">
+    <div class="media workspace-infor">
+      <div class="media-left">
+        <span class="color-8">
+          <%= image_tag workspace.logo_url,
+            size: Settings.workspace.logosize %>
+        </span>
+      </div>
+      <div class="media-body">
+        <span class="media-body-workspace-name"><%= workspace.name %></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="media sub-calendar">
+    <div class="media-left">
+      <span class="hidden-box"></span>
+    </div>
+    <div class="media-body">
+      <%= render partial: "organizations/calendar", collection: calendars %>
+    </div>
+  </div>
+<% end %>

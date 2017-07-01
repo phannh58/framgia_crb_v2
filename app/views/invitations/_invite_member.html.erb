@@ -1,21 +1,27 @@
-<div class="note-invite">
+<div class="note-invite col-md-6 col-xs-12">
+  <h2>
+    <%= t "invitations.edit.invite", member: @user.name, organization: @org.name %>
+  </h2>
+
+  <hr />
+
   <% if @user_org.present? %>
-    <h2><%= t "invitations.edit.invite" %> <%= @user.name %> <%= t ".to" %> <%= @org.name %> </h2>
-    <hr />
     <p><%= t "invitations.edit.content" %></p>
-    <%= form_for @user_org, url: organization_invitation_path(@org.slug) do |f| %>
-      <%= f.hidden_field :user_id, value: @user.slug %>
+    <%= form_for @user_org,
+      url: organization_invitations_path(@org, id: @user_org.id) do |f| %>
+      <%= f.hidden_field :id, value: @user_org.id %>
+      <%= f.hidden_field :user_id, value: @user.id %>
       <%= f.submit t("invitations.edit.send_invite_again"),  class: "btn btn-success" %>
       <%= link_to "Cancel",
-        member_organization_invitation_path(organization_id: @organization.slug, id: @user.slug),
+        organization_invitations_path(@org, id: @user_org.id),
         method: :delete,
-        data: {confirm: "Are you sure"}, class: "bt-cancel" %>
+        data: {confirm: "Are you sure"}, class: "btn btn-danger pull-right" %>
     <% end %>
   <% else %>
-    <h2><%= t "invitations.edit.invite" %> <%= @user.name %> <%= t ".to" %> <%= @org.name %> </h2>
-    <hr />
-    <p><%= t "invitations.edit.content" %></p>2
-    <%= form_for @user_org, url: organization_invitation_path(@org.slug) do |f| %>
+    <p><%= t "invitations.edit.content" %></p>
+
+    <%= form_for UserOrganization.new,
+      url: organization_invitations_path(organization_id: @org.slug) do |f| %>
       <%= f.hidden_field :user_id, value: @user.id %>
       <%= f.submit t("invitations.edit.send_invite"),  class: "btn btn-success" %>
     <% end %>

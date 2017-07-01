@@ -21,39 +21,32 @@
     background: $white;
     box-shadow: 1px 0 15px 0 $session-grey;
     position: relative;
-    top: 0;
   }
 
   .list-user {
-    max-height: 150px;
-    overflow: auto;
+    max-height: 250px;
+    overflow-y: auto;
     transition: height 2s;
-  }
 
-  .name-list {
-    height: 40px;
-    padding: 5px;
-
-    a {
-      color: $black;
+    p {
+      padding: 0;
     }
   }
 
-  .name-list:hover {
-    background: $chambray-color;
+  .name-list {
+    padding: 8px 6px;
+    display: block;
 
-    a {
-      color: $white;
-      font-weight: bold;
+    &:hover {
+      background: $chambray-color;
+    }
+
+    span {
+      margin-top: 5px;
     }
   }
 
   .img-user {
-    margin-right: 10px;
-    width: 25px;
-  }
-
-  .left-user {
-    text-align: left;
+    width: 30px;
   }
 }

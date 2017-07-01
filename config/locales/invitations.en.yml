@@ -9,14 +9,23 @@ en:
     destroy:
       cancel_success: "Cancel success"
       danger: "Error"
+    show:
+      invited: "You have invited you to join the %{name} organization"
+      no_permission: "You have no permission."
     edit:
       workspaces: "Workspaces"
       calendars: "Calendars"
       members: "Members"
       activities: "Activities"
-      invite: "Invite"
-      to: "To"
-      content: "Give them an appropriate role in the
-        organization and add them to some teams to give access to repositories."
-      send_invite: "Send Invite"
+      invite: "Invite %{member} to %{organization}"
+      content: "Give them an appropriate role in the organization and add them to some teams to give access to repositories."
+      send_invite: "Send invite"
       send_invite_again: "Send again"
+  invites:
+    show:
+      invite_placeholder: "Name or email"
+      invite_to: "Invite member to %{name}"
+      invite_by: "Name or email"
+      invite: "Invite"
+      no_permission: "You have no permission."
+      finish: "Finish"
