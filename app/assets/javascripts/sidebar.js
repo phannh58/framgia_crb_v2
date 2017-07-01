@@ -148,7 +148,7 @@ $(document).on('ready', function() {
     }
   });
 
-  $('#clst_my_menu').click(function() {
+  $('#clst_my_menu').click(function(event) {
     var position = $('#clst_my_menu').offset();
     menuCalendar.removeClass('sub-menu-visible');
     menuCalendar.addClass('sub-menu-hidden');
@@ -165,7 +165,7 @@ $(document).on('ready', function() {
     event.stopPropagation();
   });
 
-  $(document).click(function() {
+  $(document).click(function(event) {
     $('#sub-menu-my-calendar').removeClass('sub-menu-visible');
     $('#sub-menu-my-calendar').addClass('sub-menu-hidden');
 

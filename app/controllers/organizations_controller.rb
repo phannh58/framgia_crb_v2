@@ -12,14 +12,11 @@ class OrganizationsController < ApplicationController
     @organization.setting || @organization.build_setting
   end
 
-  def edit
-  end
+  def edit; end
 
   def create
     @organization = current_user.organizations.build organization_params
-    @organization.user_organizations.build user: current_user
     @organization.creator = current_user
-    @organization.user_organizations[0].status = 1
 
     if @organization.save
       flash[:success] = t "organizations.create.created"

@@ -20,7 +20,7 @@ class MultiEventsController < ApplicationController
       flash[:success] = t "events.flashs.created"
       redirect_to root_path
     else
-      redirect_back(fallback_location: request.referer)
+      redirect_back(fallback_location: root_path)
     end
   end
 end

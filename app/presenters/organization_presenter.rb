@@ -15,7 +15,7 @@ class OrganizationPresenter
   end
 
   def members
-    @members ||= User.accepted_invite @organization.id
+    @members ||= @organization.accepted_users
   end
 
   def workspace_calendars

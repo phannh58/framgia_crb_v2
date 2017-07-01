@@ -8,7 +8,7 @@ module ApplicationHelper
     case level
     when :notice then "alert-info"
     when :error then "alert-error"
-    when :alert then "alert-warning"
+    when :alert, :danger then "alert-warning"
     when :success then "alert-success"
     end
   end

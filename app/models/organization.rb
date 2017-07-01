@@ -4,6 +4,8 @@ class Organization < ApplicationRecord
 
   mount_uploader :logo, ImageUploader
 
+  before_create :make_user_organization
+
   belongs_to :creator, class_name: User.name, foreign_key: :creator_id
   has_many :user_organizations, dependent: :destroy
   has_many :users, through: :user_organizations
@@ -24,18 +26,21 @@ class Organization < ApplicationRecord
     reject_if: proc{|attributes| attributes["name"].blank?}
   accepts_nested_attributes_for :setting
 
-  scope :accepted_by_user, (lambda do |user|
-    select("organizations.*")
-      .joins("INNER JOIN user_organizations
-      ON organizations.id = user_organizations.organization_id
-      WHERE user_organizations.status = 1
-      AND user_organizations.user_id = #{user.id}")
-  end)
-
   scope :order_by_creation_time, ->{order created_at: :desc}
   scope :order_by_updated_time, ->{order updated_at: :desc}
 
   ATTRIBUTE_PARAMS = [:name, :logo,
     workspaces_attributes: [:id, :name, :address],
     setting_attributes: [:id, :timezone_name, :default_view, :country]].freeze
+
+  def accepted_users
+    users.joins(:user_organizations)
+         .where("user_organizations.status = ?", UserOrganization.statuses[:accepted])
+  end
+
+  private
+
+  def make_user_organization
+    user_organizations.new user_id: creator_id, status: :accepted
+  end
 end

@@ -8,7 +8,7 @@
             <h1 class="org-name">
               <%= @calendar_presenter.object.name %>
             </h1>
-            <% if user_signed_in? %>
+            <% if user_signed_in? && can?(:manage, @calendar_presenter.object) %>
               <%= link_to @calendar_presenter.object, class:"btn-edit-organization" do %>
                 <i class="fa fa-pencil" aria-hidden="true"></i>
               <% end %>

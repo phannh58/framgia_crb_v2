@@ -1,8 +1,27 @@
+<%= render partial: "shared/control_action", locals: {f: nil, partials: []} %>
+
+<div class="tbl-object">
+  <%= image_tag @org.logo_url, class: "avatar tbl-item" %>
+  <div class="tbl-item tbl-item-primary infor-organization">
+    <h1 class="org-name">
+      <%= @org.name %>
+    </h1>
+  </div>
+</div>
+
 <% if @user_org.waiting? %>
-  <h1><%= t ".invited", name: @user_org.organization_name %></h1>
-    <%= form_for @user_org, html: {class: "invite-form"} do |f| %>
-      <div class="actions">
-        <%= f.submit :accept, class: "btn button btn-submit" %>
-      </div>
+  <h2><%= t ".invited", name: @user_org.organization_name %></h2>
+
+  <%= form_for @user_org,
+    url: organization_invitations_path(@org, id: @user_org.id),
+    html: {class: "invite-form"} do |f| %>
+    <%= f.hidden_field :id, value: @user_org.id %>
+    <%= f.hidden_field :user_id, value: @user_org.user_id %>
+    <%= f.hidden_field :status, value: :accepted %>
+    <button type="submit" class="btn btn-success">Accept</button>
   <% end %>
+<% elsif @user_org.accepted? %>
+  <h2>
+    You have been accepted invitation to joining <%= @user_org.organization_name %> organization
+  </h2>
 <% end %>

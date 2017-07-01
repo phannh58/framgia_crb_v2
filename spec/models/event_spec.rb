@@ -176,8 +176,7 @@ RSpec.describe Event, type: :model do
 
     context ".find_with_exception" do
       it "should return event with exception" do
-        expect(Event.find_with_exception(end_time))
-          .to eq nil
+        expect(Event.find_with_exception(end_time)).to eq nil
       end
     end
 
@@ -192,8 +191,7 @@ RSpec.describe Event, type: :model do
     context "#json_data" do
       it "should return json data of a user" do
         user_event = double("Event", user_id: user.id)
-        allow(user_event).to receive(:json_data).with(user.id)
-          .and_return :value
+        allow(user_event).to receive(:json_data).with(user.id).and_return :value
         expect(user_event.json_data(user.id)).to eq :value
       end
     end
@@ -202,15 +200,12 @@ RSpec.describe Event, type: :model do
       it "should return boolean indicating the event is
         repeated and it has a parent or not" do
         expect(subject.exist_repeat?).to be_falsy
-        expect(subject.exist_repeat?).not_to be_truthy
       end
     end
 
     context "#is_repeat?" do
-      it "should return boolean indicating the event is
-        repeated or not" do
+      it "should return boolean indicating the event is repeated or not" do
         expect(subject.is_repeat?).to be_falsy
-        expect(subject.is_repeat?).not_to be_truthy
       end
     end
 

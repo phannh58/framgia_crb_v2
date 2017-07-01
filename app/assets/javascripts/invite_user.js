@@ -1,32 +1,36 @@
 $(document).ready(function(){
   var timeout;
-  $('#search-user').on('input', function(){
-    $('#result').html(null);
-    if ($('#search-user').val()){
+  var searchUser = $('#search-user');
+  var result = $('#result');
+
+  searchUser.on('input', function(){
+    result.html('');
+
+    if (searchUser.val()) {
       clearTimeout(timeout);
       timeout = setTimeout(function(){ search_user() }, 500);
     }
   });
 
   function search_user(){
-    var user_attribute = $('#search-user').val();
+    var q = searchUser.val();
     var org_slug = $('#organ_slug').val();
-    $('#search-user').addClass('loading');
+    searchUser.addClass('loading');
+
     $.ajax({
-      url: '/search_user/index',
+      url: '/users/search',
       type: 'get',
       dateType: 'text',
-      data: {
-        user_attribute: user_attribute,
-        org_slug: org_slug
-      },
-      success: function(result){
-        $('#result').html(result);
-        $('#result').find('a').hover(function(){
+      data: {q: q, org_slug: org_slug},
+      success: function(data){
+        result.html(data);
+        result.find('a').hover(function(){
           $('.name-list').blur();
           $(this).focus();
         });
-        $('#search-user').removeClass('loading');
+      },
+      complete: function() {
+        searchUser.removeClass('loading');
       }
     });
   }
@@ -50,7 +54,11 @@ $(document).ready(function(){
   });
 
   $('#invite-modal').on('hidden.bs.modal', function() {
-    $('#result').empty();
-    $('#search-user').val('');
+    result.empty();
+    searchUser.val('');
   });
+
+  $('#invitation-tabs a').click(function (e) {
+    document.location.href = $(this).attr('href');
+  })
 });
