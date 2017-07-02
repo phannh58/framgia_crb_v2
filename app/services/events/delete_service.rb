@@ -11,11 +11,8 @@ module Events
     def perform
       if delete_all?
         event = @event
-        if @event.exception_type.present? && !@event.parent?
-          event = @event.event_parent
-        end
-        make_activity @user, event, :destroy
-        event.destroy
+        event = @event.parent if @event.exception_type && @event.parent_id.blank?
+        make_activity(@user, event, :destroy) if event.destroy
       else
         perform_repeat_event
       end
@@ -66,8 +63,10 @@ module Events
     end
 
     def event_exception_pre_nearest parent, exception_time
-      events = parent.event_exceptions.follow_pre_nearest(exception_time).order(start_date: :desc)
-      events.size > 0 ? events.first : parent
+      events = parent.event_exceptions
+                     .follow_pre_nearest(exception_time)
+                     .order(start_date: :desc)
+      !events.empty? ? events.first : parent
     end
 
     %w(delete_all delete_all_follow delete_only).each do |action_name|

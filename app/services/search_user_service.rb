@@ -10,7 +10,9 @@ class SearchUserService
     return [] if org.nil?
 
     User.select("users.*, user_organizations.status as status")
-        .joins("LEFT JOIN user_organizations ON user_organizations.user_id = users.id AND user_organizations.organization_id = #{org.id}")
+        .joins("LEFT JOIN user_organizations
+          ON user_organizations.user_id = users.id
+          AND user_organizations.organization_id = #{org.id}")
         .search_name_or_email(@params[:q])
   end
 end

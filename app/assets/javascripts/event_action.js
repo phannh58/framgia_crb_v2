@@ -360,7 +360,7 @@ function updateServerEvent(event, allDay, exception_type, is_drop) {
 
   var dataUpdate = {
     event: {
-      title: event.summary,
+      title: event.title,
       start_date: start_date,
       finish_date: finish_date,
       all_day: allDay,

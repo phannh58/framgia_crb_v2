@@ -1,5 +1,6 @@
 module Notifier
-  class DesktopService < Struct.new(:event, :action_name)
+  DesktopService = Struct.new(:event, :action_name)
+  class DesktopService
     include NotifyDesktop
 
     def perform
