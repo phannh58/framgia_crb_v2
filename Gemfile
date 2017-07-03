@@ -102,6 +102,5 @@ group :staging, :production do
   gem "capistrano-sidekiq"
   gem "capistrano-passenger"
   gem "passenger", ">= 5.0.25", require: "phusion_passenger/rack_handler"
-  gem "capistrano3-unicorn"
-  gem "unicorn"
+  gem "exception_notification"
 end

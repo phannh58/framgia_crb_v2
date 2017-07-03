@@ -23,3 +23,5 @@ production:
   HR_KEY: ""
   HR_SECRET: ""
   CHATWORK_API_KEY: ""
+  CRB_EMAIL_USERNAME: ""
+  CRB_EMAIL_PASSWORD: ""

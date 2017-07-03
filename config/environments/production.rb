@@ -63,17 +63,17 @@ Rails.application.configure do
 
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.perform_deliveries = true
-  # config.action_mailer.delivery_method = :smtp
+  config.action_mailer.delivery_method = :smtp
   config.action_mailer.default_url_options = {host: ENV["HOST"]}
-  # config.action_mailer.smtp_settings = {
-  #   address: ENV["CRB_ADDRESS"],
-  #   port: ENV["CRB_PORT_MAILER"],
-  #   authentication: ENV["CRB_AUTHENTICAION"],
-  #   user_name: ENV["CRB_EMAIL_USERNAME"],
-  #   password: ENV["CRB_EMAIL_PASSWORD"],
-  #   domain: ENV["CRB_DOMAIN"],
-  #   enable_starttls_auto: true
-  # }
+  config.action_mailer.smtp_settings = {
+    address:              "smtp.gmail.com",
+    port:                 587,
+    domain:               "crb.framgia.vn",
+    user_name:            ENV["CRB_EMAIL_USERNAME"],
+    password:             ENV["CRB_EMAIL_PASSWORD"],
+    authentication:       :plain,
+    enable_starttls_auto: true
+  }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).
@@ -98,11 +98,10 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-  # Rails.application.config.middleware.use ExceptionNotification::Rack,
-  #   email: {
-  #     email_prefix: "[CRB Exception Notifier] ",
-  #     sender_address: %{"CRB Exception Notification" <fcrb.info@gmail.com>},
-  #     exception_recipients: %w{fcrb.info@gmail.com}
-  #   }
-
+  config.middleware.use ExceptionNotification::Rack,
+    email: {
+      email_prefix: "[CRB Exception Notifier] ",
+      sender_address: %{"CRB Exception Notification" <framgia.crbs@gmail.com>},
+      exception_recipients: %w{dieunb@gmail.com}
+    }
 end
