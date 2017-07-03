@@ -244,8 +244,8 @@ Devise.setup do |config|
   config.omniauth :google_oauth2, ENV["GOOGLE_KEY"], ENV["GOOGLE_SECRET"], scope: "email"
   config.omniauth :hr_system, ENV["HR_KEY"], ENV["HR_SECRET"],
     client_options: {
-      site: "http://auth.framgia.vn",
-      authorize_url: "http://10.0.1.45:4000/auth/hr_system/authorize",
+      site: "http://10.0.1.45:4000",
+      authorize_url: "http://auth.framgia.vn/auth/hr_system/authorize",
       token_url: "http://10.0.1.45:4000/auth/hr_system/access_token"
     }
 
