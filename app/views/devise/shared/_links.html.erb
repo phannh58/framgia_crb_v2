@@ -23,6 +23,8 @@
             <i class="fa fa-facebook-official" aria-hidden="true"></i>
           <% elsif provider.to_s.include?("google") %>
             <i class="fa fa-google" aria-hidden="true"></i>
+          <% else %>
+            <i class="fa fa-user-circle" aria-hidden="true"></i>
           <% end %>
           <%= t("devise.omniauthable.sign_in_with",
             provider: OmniAuth::Utils.camelize(provider)) %>
