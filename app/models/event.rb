@@ -143,6 +143,10 @@ class Event < ApplicationRecord
 
   private
 
+  def default_title
+    title = I18n.t('calendars.events.no_title')
+  end
+
   def send_notify
     if exception_type.nil?
       attendees.each do |attendee|

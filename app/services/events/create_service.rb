@@ -3,8 +3,6 @@ module Events
     include MakeActivity
     attr_accessor :is_overlap, :event
 
-    REPEAT_PARAMS = %i(repeat_type repeat_every start_repeat end_repeat repeat_ons_attributes).freeze
-
     def initialize event, params
       @event = event
       @params = params
@@ -25,9 +23,10 @@ module Events
     private
 
     def modify_repeat_params
-      REPEAT_PARAMS.each do |attribute|
-        @event.instance_variable_set :@attribute, nil
+      %i(repeat_type repeat_every start_repeat end_repeat).each do |attribute|
+        @event[attribute.to_sym] = nil
       end
+      @event.repeat_ons_attributes = []
     end
 
     def is_overlap?

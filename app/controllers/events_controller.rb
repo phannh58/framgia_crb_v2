@@ -102,11 +102,9 @@ class EventsController < ApplicationController
     Notification.all.each do |notification|
       @event.notification_events.find_or_initialize_by notification: notification
     end
-
     DaysOfWeek.all.each do |days_of_week|
       @event.repeat_ons.find_or_initialize_by days_of_week: days_of_week
     end
-
     @repeat_ons = @event.repeat_ons.sort_by(&:days_of_week_id)
   end
 
@@ -116,10 +114,7 @@ class EventsController < ApplicationController
   end
 
   def build_event_params
-    if params[:fdata].blank?
-      params[:event] = {title: ""}
-      return
-    end
+    return params[:event] = {title: ""} if params[:fdata].blank?
 
     begin
       response = JSON.parse(Base64.decode64(params[:fdata]))

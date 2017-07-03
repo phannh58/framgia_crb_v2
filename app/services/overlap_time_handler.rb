@@ -37,7 +37,7 @@ class OverlapTimeHandler
     calendar_service = CalendarService.new(events, @start_time, @end_time)
     calendar_service.repeat_data.select do |event|
       event.exception_type.nil? || (!event.delete_only? && !event.delete_all_follow?)
-    end.sort_by{|event| event.start_date}
+    end.sort_by(&:start_date)
   end
 
   def generate_temp_events event

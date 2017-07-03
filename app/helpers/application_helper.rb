@@ -1,4 +1,3 @@
-# The application do
 module ApplicationHelper
   def title page_title
     content_for :title, page_title.to_s
@@ -51,7 +50,7 @@ module ApplicationHelper
       render(association.to_s.singularize + "_fields", f: builder)
     end
     link_to t(".add_workspace"), "javascript:void(0)", class: "btn btn-primary",
-      onclick: "add_fields(this,\"#{association}\", \"#{escape_javascript(fields)}\")"
+      onclick: "add_fields(this, \"#{association}\", \"#{escape_javascript(fields)}\")"
   end
 
   def context_user

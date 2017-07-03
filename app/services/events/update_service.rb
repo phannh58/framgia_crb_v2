@@ -4,11 +4,11 @@ module Events
 
     attr_accessor :is_overlap, :event
 
-    REPEAT_PARAMS = [:repeat_type, :repeat_every, :start_repeat, :end_repeat,
-      :repeat_ons_attributes].freeze
-    HANDLE_ATTRIBUTES_PARAMS = [:all_day, :repeat_type, :repeat_every,
-      :calendar_id, :start_date, :finish_date, :start_repeat, :end_repeat,
-      :exception_type, :exception_time].freeze
+    REPEAT_PARAMS = %i(repeat_type repeat_every start_repeat end_repeat
+                       repeat_ons_attributes).freeze
+    HANDLE_ATTRIBUTES_PARAMS = %i(all_day repeat_type repeat_every calendar_id
+                                  start_date finish_date start_repeat end_repeat
+                                  exception_type exception_time).freeze
 
     def initialize user, event, params
       @user = user
@@ -18,26 +18,20 @@ module Events
     end
 
     def perform
-      nhash = {
-        exception_time: event_params[:start_date],
-        start_repeat: start_repeat,
-        end_repeat: end_repeat
-      }
       @params[:event] = @params[:event].merge(nhash)
 
-      if changed_time? && is_overlap? && !@event.calendar.is_allow_overlap?
+      if changed_time? && (@is_overlap = is_overlap?) && !@event.calendar.is_allow_overlap?
         return false
-      else
-        exception_service = Events::ExceptionService.new(@event, @params)
-
-        if exception_service.perform
-          @event = exception_service.new_event
-          make_activity @user, @event, :update
-          return true
-        else
-          return false
-        end
       end
+
+      exception_service = Events::ExceptionService.new(@event, @params)
+
+      if exception_service.perform
+        @event = exception_service.event
+        make_activity @user, @event, :update
+        return true
+      end
+      false
     end
 
     private
@@ -57,7 +51,7 @@ module Events
       @event_handler.parent_id = @event.parent? ? @event.id : @event.parent_id
       @event_handler.calendar_id = @event.calendar_id
       overlap_time_handler = OverlapTimeHandler.new(@event_handler)
-      self.is_overlap = overlap_time_handler.valid?
+      overlap_time_handler.valid?
     end
 
     def start_repeat
@@ -71,6 +65,14 @@ module Events
     def changed_time?
       return false if @event_handler.start_date.nil?
       @event.start_date != @event_handler.start_date
+    end
+
+    def nhash
+      {
+        exception_time: event_params[:start_date],
+        start_repeat: start_repeat,
+        end_repeat: end_repeat
+      }
     end
   end
 end

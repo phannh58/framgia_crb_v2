@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
   before_action :set_locale
   before_action :configure_permitted_parameters, if: :devise_controller?
   after_action :store_location
-  before_action :create_back_cookie
+  before_action :create_back_cookie, unless: "request.xhr?"
 
   rescue_from CanCan::AccessDenied do |exception|
     flash[:alert] = exception.message
@@ -55,7 +55,6 @@ class ApplicationController < ActionController::Base
       format.html{redirect_to root_path, flash: {alert: "You don't have permission for this!!!"}}
       format.json{render json: {status: 401, message: "You don't have permission for this!!!"}, status: 401}
     end
-    return
   end
 
   def validate_permission_see_detail_of_calendar calendar
@@ -68,7 +67,6 @@ class ApplicationController < ActionController::Base
       format.html{redirect_to root_path, flash: {alert: "You don't have permission for this!!!"}}
       format.json{render json: {status: 401, message: "You don't have permission for this!!!"}, status: 401}
     end
-    return
   end
 
   def store_location

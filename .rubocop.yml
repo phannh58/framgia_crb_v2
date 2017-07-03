@@ -24,6 +24,11 @@ AllCops:
     - 'Gemfile'
     - 'Gemfile.lock'
     - 'lib/**/*'
+    - 'Guardfile'
+    - 'Capfile'
+    - 'Rakefile'
+    - 'config.ru'
+    - 'app/services/calendar_service.rb'
 Documentation:
     Enabled: false
 # By default, the rails cops are not run. Override in project or home
