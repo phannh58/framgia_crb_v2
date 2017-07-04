@@ -59,9 +59,10 @@
         <div class="cb-repeat first <%= "repeat-on" if @event.exist_repeat? %>">
           <%= label_tag :repeat do %>
             <%= check_box_tag :repeat %> <%= t ".repeat" %>
-            <span>
-              <%= link_to t("events.links.edit"), "javascript:void(0)",
-                class: "dialog-repeat-event"  %>
+            <span class="edit-repeat">
+              <%= link_to "javascript:void(0)", class: "dialog-repeat-event" do %>
+                <i class="fa fa-pencil" aria-hidden="true"></i> <%= t "events.links.edit" %>
+              <% end %>
             </span>
           <% end %>
         </div>

@@ -264,6 +264,11 @@ UNUSED.gcal-contenteditable-textinput.textarea {
 
   .cb-repeat {
     overflow: hidden;
+
+    .edit-repeat {
+      font-size: 13px;
+      margin-left: 20px;
+    }
   }
 
   form {
