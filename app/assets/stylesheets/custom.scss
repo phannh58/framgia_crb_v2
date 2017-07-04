@@ -34,7 +34,7 @@
       list-style-type: none;
       padding-right: 15px;
 
-      a {
+      > a {
         color: $black;
         display: block;
 
@@ -130,6 +130,9 @@
         text-align: left;
         text-decoration: none;
 
+        a {
+
+        }
         &:hover {
           background-color: $mercury-color;
         }

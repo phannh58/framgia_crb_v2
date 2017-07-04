@@ -1,4 +1,6 @@
 require 'simplecov'
+require 'omniauth'
+
 SimpleCov.start 'rails'
 
 RSpec.configure do |config|
@@ -17,7 +19,7 @@ RSpec.configure do |config|
       name: "test",
       email: "test@gmail.com"},
     credentials: {
-      expires_at: Time.now + 1.week,
+      expires_at: Time.now + 7 * 24 * 60 * 60,
       token: "1234567"
     }})
   OmniAuth.config.add_mock(:google_oauth2,
@@ -28,7 +30,7 @@ RSpec.configure do |config|
       name: "test",
       email: "test@gmail.com"},
     credentials: {
-      expires_at: Time.now + 1.week,
+      expires_at: Time.now + 7 * 24 * 60 * 60,
       token: "1234567"
     }})
 end

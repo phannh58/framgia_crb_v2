@@ -1,10 +1,10 @@
 class User < ApplicationRecord
   extend FriendlyId
 
-  friendly_id :name, use: [:slugged, :finders]
+  friendly_id :name, use: %i(slugged finders)
 
   devise :database_authenticatable, :rememberable, :trackable, :validatable,
-    :registerable, :omniauthable
+    :registerable, :omniauthable, :recoverable
 
   mount_uploader :avatar, ImageUploader
 
@@ -80,6 +80,7 @@ class User < ApplicationRecord
       user = find_or_initialize auth
 
       if user.new_record?
+        user.password = Devise.friendly_token[0, 20]
         user.build_setting timezone_name: ActiveSupport::TimeZone.all.sample.name
       end
       user.save
@@ -92,7 +93,6 @@ class User < ApplicationRecord
         user.provider = auth.provider
         user.uid = auth.uid
         user.email = auth.info.email
-        user.password = Devise.friendly_token[0, 20]
         user.display_name = auth.info.name
         user.name ||= make_name(auth)
       end
