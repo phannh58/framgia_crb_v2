@@ -3,7 +3,8 @@ class Ability
 
   def initialize user
     user ||= NullUser.new
-    can :show, User, id: user.id
+
+    can :manage, User, id: user.id
     can :manage, Calendar
     can :manage, Event
     can :show, Event

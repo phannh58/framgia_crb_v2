@@ -18,5 +18,5 @@ class UserOrganization < ApplicationRecord
     UserMailer.invite_to_join_organization(user_id, organization_id).deliver
   end
 
-  handle_asynchronously :send_invitation, run_at: proc{1.minutes.from_now}
+  handle_asynchronously :send_invitation, run_at: proc{1.minute.from_now}
 end
