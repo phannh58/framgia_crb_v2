@@ -26,7 +26,7 @@ class CalendarService
   def generate_event
     event = @base_events.first
 
-    if event.is_repeat?
+    if event.is_repeat? && !event.edit_only?
       generate_repeat_from_event_parent event
     else
       @events << FullCalendar::Event.new(event, @user)

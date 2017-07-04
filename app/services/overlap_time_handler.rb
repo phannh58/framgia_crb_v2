@@ -6,14 +6,16 @@ class OverlapTimeHandler
     @event = event
     @db_events = generate_db_events @event.calendar_id, @event.parent_id || @event.id
     @temp_events = generate_temp_events event
-    @repeat_events = []
-    if (parent = @event.parent) && parent.is_repeat?
-      @repeat_events = generate_temp_events parent
-    end
+
+    # @repeat_events = []
+
+    # if (parent = @event.parent) && parent.is_repeat?
+    #   @repeat_events = generate_temp_events parent
+    # end
   end
 
   def valid?
-    return true if check_overlap_event @repeat_events, @temp_events
+    # return true if check_overlap_event @repeat_events, @temp_events
     return true if check_overlap_event @db_events, @temp_events
     false
   end

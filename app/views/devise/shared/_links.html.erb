@@ -1,5 +1,5 @@
 <div id="share-link">
-  <% if controller_name == 'home' %>
+  <% if controller_name != 'passwords' %>
     <% if target == :signup %>
       <p>
         <%= link_to "javascript:void(0)", class: "login" do %>

@@ -7,20 +7,26 @@ module Events
       end
 
       def perform
-        if @event.edit_all_follow?
-          event = @event.dup
-          event.update(exception_type: Event.exception_types[:delete_only],
-                      old_exception_type: Event.exception_types[:edit_all_follow])
+        edit_all_follow_event = @event.dup if @event.edit_all_follow?
+
+        begin
+          ActiveRecord::Base.transaction do
+            if edit_all_follow_event
+              exception_type = Event.exception_types[:delete_only]
+              old_exception_type = Event.exception_types[:edit_all_follow]
+              edit_all_follow_event.update_attributes! exception_type: exception_type,
+                old_exception_type: old_exception_type
+            end
+
+            @event = duplicate_event if @event.parent_id.nil?
+            @event.update_attributes! event_params
+          end
+        rescue ActiveRecord::RecordInvalid => exception
+          Rails.logger.info('----------------------> ERRORS!!!!')
         end
-        save_this_event_exception
       end
 
       private
-
-      def save_this_event_exception
-        @event = duplicate_event if @event.parent_id.nil?
-        @event.update event_params
-      end
 
       def event_params
         @params.require(:event).permit Event::ATTRIBUTES_PARAMS

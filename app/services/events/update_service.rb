@@ -18,7 +18,9 @@ module Events
     end
 
     def perform
-      @params[:event] = @params[:event].merge(nhash)
+      if @event.exist_repeat? && @event.parent_id.nil?
+        @params[:event] = @params[:event].merge(nhash)
+      end
 
       if changed_time? && (@is_overlap = is_overlap?) && !@event.calendar.is_allow_overlap?
         return false
@@ -64,7 +66,12 @@ module Events
 
     def changed_time?
       return false if @event_handler.start_date.nil?
-      @event.start_date != @event_handler.start_date
+
+      if (@event.exist_repeat? && @event.edit_only?) || !@event.exist_repeat?
+        return @event.start_date != @event_handler.start_date
+      end
+
+      return false
     end
 
     def nhash
