@@ -1,10 +1,15 @@
 //= require highlight_event
 
-function load_event (from, to) {
+function load_highlight_event() {
+  var date = $calendar.fullCalendar('getView').currentDate._d;
+  var from = firstDateShow(date.getMonth(), date.getFullYear());
+  var to = lastDateShow(date.getMonth(), date.getFullYear());
+
   var calendar_ids = [];
   $('.sidebar-calendars .div-box>div').not($('.uncheck')).each(function() {
     calendar_ids.push($(this).attr('data-calendar-id'));
   });
+
   var start_time_view = new Date(from);
   var end_time_view = new Date(to);
   $.ajax({
@@ -49,6 +54,9 @@ function formatDate(value) {
 $(document).on('ready', function() {
   var $miniCalendar = $('#mini-calendar');
   var menuCalendar = $('#menu-of-calendar');
+
+  if($miniCalendar) load_highlight_event();
+
   $('.fc-prev-button, .fc-next-button, .fc-today-button').click(function() {
     var moment = $calendar.fullCalendar('getDate');
     $miniCalendar.datepicker();
@@ -63,8 +71,10 @@ $(document).on('ready', function() {
     changeYear: true,
     beforeShowDay: highlightDays,
     onSelect: function(dateText) {
-      $calendar.fullCalendar('gotoDate', new Date(Date.parse(dateText)));
-      $(this).datepicker('setDate', new Date(Date.parse(dateText)));
+      localStorage.setItem('currentSelectDate', dateText);
+      var dateParse = Date.parse(dateText);
+      $calendar.fullCalendar('gotoDate', new Date(dateParse));
+      $(this).datepicker('setDate', new Date(dateParse));
     },
     onChangeMonthYear:function(y, m) {
       var selectedDate = $(this).datepicker('getDate');

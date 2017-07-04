@@ -8,8 +8,8 @@ module Events
       @event = event
       @params = params
       @event_params = @params.require(:event).permit Event::ATTRIBUTES_PARAMS
-      @exception_type = @event_params[:exception_type]
-      @exception_time = @event_params[:exception_time]
+      @exception_type = @event_params[:exception_type] || @event.exception_type
+      @exception_time = @event_params[:exception_time] || @event.exception_time
       @start_time_before_drag = @params[:start_time_before_drag]
       @finish_time_before_drag = @params[:finish_time_before_drag]
       @persisted = @params[:persisted]

@@ -73,8 +73,8 @@ class Event < ApplicationRecord
       Event.none
     end
   end
-  scope :reject_with_id, ->(event_id) do
-    where("id != ? OR parent_id != ?", event_id, event_id) if event_id.present?
+  scope :without_id, ->(id) do
+    where("id != ? AND parent_id != ?", id, id) if id.present?
   end
   scope :no_repeats, ->{where repeat_type: nil}
   scope :has_exceptions, ->{where.not exception_type: nil}
@@ -187,7 +187,7 @@ class Event < ApplicationRecord
 
   def valid_repeat_date
     return if start_repeat.nil? || end_repeat.nil?
-    return if start_repeat <= end_repeat
+    return if start_repeat <= end_repeat.end_of_day
     errors.add(:start_repeat, I18n.t("events.warning.start_date_less_than_end_date"))
   end
 
