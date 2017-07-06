@@ -1,61 +1,6 @@
-//= require highlight_event
-
-function load_highlight_event() {
-  var date = $calendar.fullCalendar('getView').currentDate._d;
-  var from = firstDateShow(date.getMonth(), date.getFullYear());
-  var to = lastDateShow(date.getMonth(), date.getFullYear());
-
-  var calendar_ids = [];
-  $('.sidebar-calendars .div-box>div').not($('.uncheck')).each(function() {
-    calendar_ids.push($(this).attr('data-calendar-id'));
-  });
-
-  var start_time_view = new Date(from);
-  var end_time_view = new Date(to);
-  $.ajax({
-    url: '/events',
-    data: {
-      calendar_ids: calendar_ids,
-      organization_id: org_id,
-      start_time_view: moment.tz(formatDate(start_time_view), window.timezone).format(),
-      end_time_view: moment.tz(formatDate(end_time_view), window.timezone).format()
-    },
-    dataType: 'json',
-    success: function(response) {
-      var dates = Events.getInstance();
-      dates.clear();
-      response.events.forEach(function(event) {
-        var date = moment.tz(event.start_date, timezone).format('MM/DD/YYYY');
-        dates.add(date);
-      });
-      $('#mini-calendar').datepicker('refresh');
-    }
-  });
-}
-
-function firstDateShow(month, year) {
-  var firstDayOfWeek = 1;
-  var firstDay = new Date(year, month, 1);
-  var i = firstDay.getDate() - firstDay.getDay() - firstDayOfWeek;
-  return firstDay.setDate(firstDay.getDate() + i);
-}
-
-function lastDateShow(month, year) {
-  var lastDay = new Date(year, month + 1, 0);
-  var lastDayOfWeek = 6;
-  var i = lastDayOfWeek - lastDay.getDay();
-  return lastDay.setDate(lastDay.getDate() + i);
-}
-
-function formatDate(value) {
-  return moment(value).format('MM/DD/YYYY');
-}
-
 $(document).on('ready', function() {
   var $miniCalendar = $('#mini-calendar');
   var menuCalendar = $('#menu-of-calendar');
-
-  if($miniCalendar) load_highlight_event();
 
   $('.fc-prev-button, .fc-next-button, .fc-today-button').click(function() {
     var moment = $calendar.fullCalendar('getDate');
@@ -71,7 +16,9 @@ $(document).on('ready', function() {
     changeYear: true,
     beforeShowDay: highlightDays,
     onSelect: function(dateText) {
-      localStorage.setItem('currentSelectDate', dateText);
+      hiddenDialog('new-event-dialog');
+      hiddenDialog('popup');
+      hiddenDialog('dialog-update-popup');
       var dateParse = Date.parse(dateText);
       $calendar.fullCalendar('gotoDate', new Date(dateParse));
       $(this).datepicker('setDate', new Date(dateParse));
@@ -81,18 +28,16 @@ $(document).on('ready', function() {
       selectedDate.setDate(1);
       selectedDate.setMonth(m-1);
       selectedDate.setFullYear(y);
-      var firstDay = firstDateShow(m-1,selectedDate.getFullYear());
-      var lastDay = lastDateShow(m-1, selectedDate.getFullYear());
-      load_event(firstDay,lastDay);
       $miniCalendar.datepicker('refresh');
       $(this).datepicker('setDate', selectedDate);
     }
   });
 
   function highlightDays(date) {
-    var dates = Events.getInstance();
-    for (var i = 0; i < dates.array.length; i++) {
-      if (dates.array[i].toString() == formatDate(date)) {
+    var events = $calendar.fullCalendar('clientEvents');
+
+    for (var i = 0; i < events.length; i++) {
+      if (moment(events[i]._start).format('MM/DD/YYYY') == moment(date).format('MM/DD/YYYY')) {
         return [true, 'highlight'];
       }
     }
@@ -152,9 +97,9 @@ $(document).on('ready', function() {
       $('#sub-menu-my-calendar, #menu-of-calendar, #sub-menu-setting').addClass('sub-menu-hidden');
       $('.list-group-item').removeClass('background-hover');
       $('.sub-list').removeClass('background-hover');
-      // hiddenDialog('new-event-dialog');
-      // hiddenDialog('popup');
-      // hiddenDialog('dialog-update-popup');
+      hiddenDialog('new-event-dialog');
+      hiddenDialog('popup');
+      hiddenDialog('dialog-update-popup');
     }
   });
 

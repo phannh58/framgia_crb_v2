@@ -18,7 +18,7 @@ module Events
     end
 
     def perform
-      if @event.exist_repeat? && @event.parent_id.nil?
+      if @event.exist_repeat? && (@event.parent_id.nil? || (@event.parent_id && @event.edit_all_follow?))
         @params[:event] = @params[:event].merge(nhash)
       end
 

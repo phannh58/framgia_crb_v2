@@ -209,3 +209,4 @@ class Event < ApplicationRecord
     EventWorker.perform_async id, "delete"
   end
 end
+
