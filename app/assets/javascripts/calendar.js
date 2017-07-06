@@ -122,12 +122,6 @@ $(document).on('ready', function() {
         $(element).addClass('before-current');
       }
     },
-    eventAfterAllRender: function(view) {
-      var date = view.currentDate._d;
-      var from = firstDateShow(date.getMonth(), date.getFullYear());
-      var to = lastDateShow(date.getMonth(), date.getFullYear());
-      load_event(from, to);
-    },
     eventClick: function(event, jsEvent) {
       if(event.id) {
         localStorage.setItem('current_event_id', event.id);
