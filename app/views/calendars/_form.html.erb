@@ -84,17 +84,12 @@
     <div class="divider"></div>
     <div class="row col-md-6">
       <label for="make_public">
-        <input type="checkbox" id="make_public" name="calendar[status]" value="<%= @calendar.status %>">
+        <%= f.check_box :status, {id: "make_public"}, "share_public", "no_public" %>
         <%= t "calendar.make_calendar_public" %>
       </label>
       <span><%= t "calendar.make_public_description" %></span>
     </div>
     <div class="clearfix"></div>
-    <div class="row col-md-6">
-      <label for="free_busy">
-        <input type="checkbox" id="free_busy"> <%= t "calendar.share_only_free_busy" %>
-      </label>
-    </div>
   </div>
 
   <div class="share-calendar form-group clearfix">

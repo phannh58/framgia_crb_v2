@@ -57,13 +57,6 @@
                 <span class="calHeaderSpace"><%= t ".shared_calendars" %></span>
               </div>
             </h2>
-            <div class="send-request border-light input-group">
-              <input id="request-email-input" type="text" class="form-control"
-                placeholder="<%= t ".request.calendar_address" %>">
-              <span class="input-group-btn">
-                <button id="request-email-button"></button>
-              </span>
-            </div>
             <div id="collapse2" class="panel-collapse collapse in" aria-expanded="true">
               <%= render "calendars", calendars: @calendar_presenter.shared_calendars %>
             </div>

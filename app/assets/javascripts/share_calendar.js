@@ -1,28 +1,6 @@
 'use strict';
 
-$(document).ready(function(){
-  var makePublicCheckBox = $('#make_public');
-  var freeBusyCheckBox = $('#free_busy');
-
-  if (makePublicCheckBox.val() === 'public_hide_detail') {
-    makePublicCheckBox.prop('checked', true);
-    freeBusyCheckBox.prop('checked', true);
-  } else if (makePublicCheckBox.val() === 'share_public') {
-    makePublicCheckBox.prop('checked', true);
-  } else if (makePublicCheckBox.val() === 'no_public') {
-    makePublicCheckBox.prop('checked', false);
-    freeBusyCheckBox.prop('disabled', true);
-  }
-
-  makePublicCheckBox.click(function() {
-    $(this).val(this.checked ? 'share_public' : 'no_public');
-    freeBusyCheckBox.prop('disabled', !this.checked);
-  });
-
-  freeBusyCheckBox.click(function() {
-    makePublicCheckBox.val(freeBusyCheckBox.prop('checked') ? 'public_hide_detail' : 'share_public');
-  });
-
+$(document).ready(function() {
   /* share-calendar*/
 
   $('#textbox-email-share').select2({

@@ -82,7 +82,7 @@ class CalendarsController < ApplicationController
 
   def load_owners
     @owners = [[current_user.name, current_user.name, {"data-owner-type" => "User"}]]
-    @owners += current_user.organizations.map do |org|
+    @owners += Organization.of_owner(current_user).map do |org|
       [org.name, org.name, {"data-owner-type" => "Organization"}]
     end
   end

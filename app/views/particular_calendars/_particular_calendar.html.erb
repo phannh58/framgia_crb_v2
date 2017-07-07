@@ -1,4 +1,91 @@
-<div class="particular-calendar" calendar-id="<%= @calendar.id %>"
-  user-id="<%= current_user.id if user_signed_in? %>"
-  calendar-status="<%= @calendar.status %>">
+<div id="calcontent" class="calendar-content">
+  <div class="mothertable">
+    <div id="nav">
+      <div id="sidebar">
+        <div class="tbl-object">
+          <%= image_tag @calendar_presenter.logo_url, class: "avatar tbl-item" %>
+          <div class="tbl-item tbl-item-primary infor-organization">
+            <h1 class="org-name">
+              <%= @calendar_presenter.object.name %>
+            </h1>
+            <% if user_signed_in? && can?(:manage, @calendar_presenter.object) %>
+              <%= link_to @calendar_presenter.object, class:"btn-edit-organization" do %>
+                <i class="fa fa-pencil" aria-hidden="true"></i>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+        <%= render "calendars/view_context" if user_signed_in? %>
+      </div>
+      <div class="hide-sidebar">
+        <div class="mini-calendar">
+          <h2 id="title-mini-calendar" class="calHeader goog-zippy-collapsed">
+            <div class="hover-my-calendar">
+              <span class="h zippy-arrow" unselectable="off">&nbsp;</span>
+              <span class="calHeaderSpace"><%= t "calendar.mini_calendar" %></span>
+            </div>
+          </h2>
+          <div id="mini-calendar"></div>
+        </div>
+        <div id="my-calendar" data-mcalendar="<%= @calendar_presenter.calendars_json %>">
+          <h2 id="clst_my" class="calHeader goog-zippy-collapsed">
+            <div class="hover-my-calendar">
+              <span id="my-zippy-arrow" class="h zippy-arrow down" unselectable="off">&nbsp;</span>
+              <span class="calHeaderSpace">
+                <% if @calendar_presenter.org_obj? %>
+                  <%= t ".org_calendars" %>
+                <% else %>
+                  <%= t ".my_calendars" %>
+                <% end %>
+              </span>
+
+              <% if user_signed_in? %>
+                <span id="clst_my_menu" class="clst-my-menu clst-menu"></span>
+              <% end %>
+            </div>
+          </h2>
+          <div id="collapse1" class="panel-collapse collapse in" aria-expanded="true">
+            <%= render "calendars/calendars", calendars: @calendar_presenter.my_calendars %>
+          </div>
+        </div>
+
+        <% unless @calendar_presenter.organization %>
+          <div id="other-calendar">
+            <h2 id="clst_other" class="calHeader goog-zippy-collapsed">
+              <div class="hover-my-calendar">
+                <span id="other-zippy-arrow" class="h zippy-arrow down" unselectable="off">&nbsp;</span>
+                <span class="calHeaderSpace"><%= t ".shared_calendars" %></span>
+              </div>
+            </h2>
+            <div id="collapse2" class="panel-collapse collapse in" aria-expanded="true">
+              <%= render "calendars/calendars", calendars: @calendar_presenter.shared_calendars %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+    <div class="mainbody">
+      <div id="full-calendar" class="mainbody-full-calendar" data-reload-page="false"></div>
+    </div>
+  </div>
+  <%= render "calendars/sidebar_menu" %>
+
+  <% if user_signed_in? %>
+    <div id="dialog_overlap_confirm" class="hidden" title="<%= t 'events.overlap.content' %>"></div>
+    <%= render "events/dialog_form" %>
+    <%= confirm_popup_repeat_events t("events.repeat_dialog.delete") %>
+    <%= confirm_popup_repeat_events t("events.repeat_dialog.edit") %>
+  <% end %>
+
+  <%= render "events/google_event_popup" %>
 </div>
+<div class="fc-right-left hidden full-timezone-name" id="timezone-name">
+  <%= @calendar_presenter.full_timezone_name %>
+</div>
+<div id="loading" class="loading-overlay" style="display: none;">loading...</div>
+
+<% if user_signed_in? %>
+  <%= javascript_include_tag "calendar" %>
+<% else %>
+  <%= javascript_include_tag "calendar_not_sign_in" %>
+<% end %>

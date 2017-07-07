@@ -36,7 +36,7 @@ en:
     permission: "Permission Settings"
     remove: "Remove"
     make_calendar_public: "Make this calendar public"
-    make_public_description: "This calendar will appear in public system search results."
+    make_public_description: "This calendar will appear in public. Every one can see all events on it."
     share_only_free_busy: "Share only my free/busy information (Hide details)"
     title_share_calendar: "Share with specific people"
     add_person: "Add Person"

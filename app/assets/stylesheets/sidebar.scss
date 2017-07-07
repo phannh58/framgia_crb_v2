@@ -156,33 +156,6 @@
 
   #other-calendar {
     margin-top: 10px;
-
-    .send-request {
-      margin-bottom: 5px;
-      position: relative;
-
-      #request-email-input {
-        font-size: 12px;
-        height: 25px;
-        margin-bottom: 0;
-        outline: none;
-        width: 100%;
-      }
-
-      #request-email-button {
-        background-image: url(image-path('icon_add.png'));
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: 20px 20px;
-        color: $dusty-gray-color;
-        font-size: 14px;
-        height: 23px;
-        outline: none;
-        transition: background-color .2s;
-        width: 23px;
-      }
-    }
-
     #collapse2 {
       margin-top: 5px;
     }

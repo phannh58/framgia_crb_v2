@@ -6,8 +6,7 @@
     <%= calendar.name %>
   </label>
   <% if context_user.can_make_changes_and_manage_sharing?(calendar) %>
-    <span id="<%= calendar.id %>" selected_color_id="<%= calendar.uc_color_id %>"
-      class="clst-menu clst-menu-child" rel="<%= calendar.uc_color_id %>">
+    <span id="<%= calendar.id %>" selected_color_id="<%= calendar.uc_color_id %>" class="clst-menu clst-menu-child" rel="<%= calendar.uc_color_id %>">
       <% unless calendar.parent? %>
         <span class="sub"></span>
       <% end %>

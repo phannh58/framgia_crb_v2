@@ -8,8 +8,6 @@ RSpec.describe Calendar, type: :model do
   it{should have_many(:events).dependent :destroy}
   it{should have_many(:user_calendars).dependent :destroy}
   it{should have_many :users}
-  it{should have_many(:sub_calendars).class_name(Calendar.name)
-    .with_foreign_key :parent_id}
   it{should accept_nested_attributes_for(:user_calendars).allow_destroy true}
   it{should delegate_method(:name).to(:owner).with_prefix(true)
     .with_arguments allow_nil: true}
