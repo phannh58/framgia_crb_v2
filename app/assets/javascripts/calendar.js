@@ -79,16 +79,13 @@ $(document).on('ready', function() {
       $('.sidebar-calendars .div-box>div').not($('.uncheck')).each(function() {
         calendar_ids.push($(this).attr('data-calendar-id'));
       });
-      var start_time_view = $calendar.fullCalendar('getView').start;
-      var end_time_view = $calendar.fullCalendar('getView').end;
-
       $.ajax({
         url: '/events',
         data: {
           calendar_ids: calendar_ids,
           organization_id: org_id,
-          start_time_view: moment.tz(start_time_view.format(), timezone).format(),
-          end_time_view: moment.tz(end_time_view.format(), timezone).format()
+          start_time_view: moment.tz(moment().startOf('month').format(), timezone).format(),
+          end_time_view: moment.tz(moment().endOf('month').format(), timezone).format()
         },
         dataType: 'json',
         success: function(response) {
@@ -216,6 +213,9 @@ $(document).on('ready', function() {
       if (stillEvent.calendar_id == movingEvent.calendar_id || calendarViewContext === 'scheduler') {
         return false;
       }
+    },
+    eventAfterAllRender: function() {
+      $('#mini-calendar').datepicker('refresh');
     },
     loading: function(bool) {
       $('#loading').toggle(bool);

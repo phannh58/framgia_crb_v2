@@ -16,7 +16,6 @@ class CalendarService
     end
 
     (@base_events - event_no_repeats).each do |event|
-      next unless event.parent?
       generate_repeat_from_event_parent event
     end
 
@@ -248,11 +247,12 @@ class CalendarService
 
     event_end_repeat_date = event.end_repeat.to_date
 
-    range_repeat_time.each do |repeat_date|
-      next if event.start_repeat > repeat_date || event.end_repeat < repeat_date
+    range_repeat_time.each_with_index do |repeat_date, index|
+      next if @events.select{|fevent| fevent.event == event && fevent.start_date.to_date == repeat_date}.present?
+      next if event.start_repeat.to_date > repeat_date || event.end_repeat.to_date < repeat_date
 
       event_temp = FullCalendar::Event.new event, @user
-      repeat_date = event.start_date.to_date if repeat_date < event.start_date
+      repeat_date = event.start_date.to_date if repeat_date < event.start_date.to_date
 
       if repeat_date <= event_end_repeat_date
         event_temp.update_info(repeat_date)

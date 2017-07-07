@@ -498,7 +498,7 @@
           text-align: center;
 
           &:hover {
-            background: $mercury-color;
+            border: 1px solid $black;
           }
           ;
         }
@@ -513,13 +513,15 @@
       }
 
       .ui-state-active {
-        background: $mercury-color;
+        background: $mountain-meadow-color;
+        color: $white;
       }
 
       .ui-state-highlight {
-        background: $mercury-color;
-        border: 1px solid $alto-color;
+        background: $sunset-orange-color;
+        border: 1px solid $sunset-orange-color;
         font-weight: bold;
+        color: $white;
       }
 
       .ui-datepicker-header {
