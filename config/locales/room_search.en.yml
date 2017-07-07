@@ -8,7 +8,7 @@ en:
     date: "Date"
     time: "Time"
     action: "Action"
-    book: "Book"
+    book_now: "Book now"
     suggest_label: "suggest"
     empty_start_time_input: "Start time is null"
     empty_finish_time_input: "Finish time is null"

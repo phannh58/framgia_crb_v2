@@ -28,6 +28,7 @@ class Organization < ApplicationRecord
 
   scope :order_by_creation_time, ->{order created_at: :desc}
   scope :order_by_updated_time, ->{order updated_at: :desc}
+  scope :of_owner, ->(user){where creator_id: user.id}
 
   ATTRIBUTE_PARAMS = [:name, :logo,
     workspaces_attributes: [:id, :name, :address],

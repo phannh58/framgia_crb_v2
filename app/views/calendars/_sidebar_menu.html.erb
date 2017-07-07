@@ -1,19 +1,17 @@
 <div id="sub-menu-my-calendar" class="sub-menu sub-menu-hidden">
   <div class="link">
-    <%= link_to t("calendar.sub_menu.create_calendar"), new_calendar_path %>
+    <%= link_to new_calendar_path do %>
+      <i class="fa fa-plus" aria-hidden="true"></i> <%= t("calendar.sub_menu.create_calendar") %>
+    <% end %>
   </div>
 </div>
 <div id="menu-of-calendar" class="sub-menu menu-calendar sub-menu-hidden">
   <input type="hidden" id="menu-calendar-id">
   <div id="id-of-calendar"></div>
-  <!-- <div class="link"> -->
-    <%#= link_to t("calendar.sub_menu.create_sub_calendar"),
-      "javascript:void(0)", id: "create-sub-calendar" %>
-  <!-- </div> -->
   <div class="link">
-    <%= link_to t("calendar.sub_menu.calendar_setting"),
-      "javascript:void(0)", id: "edit-calendar" %>
+    <%= link_to "javascript:void(0)", id: "edit-calendar" do %>
+    <i class="fa fa-cog" aria-hidden="true"></i> <%= t("calendar.sub_menu.calendar_setting") %>
+    <% end %>
   </div>
-
   <%= render "shared/colors" %>
 </div>

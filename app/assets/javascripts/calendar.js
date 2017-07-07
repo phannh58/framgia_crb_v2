@@ -1,6 +1,5 @@
 //= require_self
 //= require sidebar
-//= require calendar_sidebar_menu
 //= require event_action
 
 $(document).on('ready', function() {

@@ -20,12 +20,15 @@
           </div>
           <div class="dropdown-divider"></div>
           <div class="sub-setting">
-            <%= link_to t(".profile_setting"), current_user %>
+            <%= link_to current_user do %>
+              <i class="fa fa-cog" aria-hidden="true"></i> <%= t(".profile_setting") %>
+            <% end %>
           </div>
           <div class="dropdown-divider"></div>
           <div class="sub-setting">
-            <%= link_to t("session.link.sign_out"), destroy_user_session_path,
-              method: :delete %>
+            <%= link_to destroy_user_session_path, method: :delete do %>
+             <i class="fa fa-sign-in" aria-hidden="true"></i> <%= t("session.link.sign_out") %>
+            <% end %>
           </div>
           <div class="top-prong">
             <div class="prong-dk"></div>
@@ -43,13 +46,19 @@
 
         <div class= "sub-menu sub-menu-hidden">
           <div class="sub-setting">
-            <%= link_to t(".new_event"), new_event_path %>
+            <%= link_to new_event_path do %>
+              <i class="fa fa-plus" aria-hidden="true"></i> <%= t(".new_event") %>
+            <% end %>
           </div>
           <div class="sub-setting">
-            <%= link_to t(".new_organization"), new_organization_path %>
+            <%= link_to new_organization_path do %>
+              <i class="fa fa-plus" aria-hidden="true"></i> <%= t(".new_organization") %>
+            <% end %>
           </div>
           <div class="sub-setting">
-            <%= link_to t(".new_calendar"), new_calendar_path %>
+            <%= link_to new_calendar_path do %>
+              <i class="fa fa-plus" aria-hidden="true"></i> <%= t(".new_calendar") %>
+            <% end %>
           </div>
           <div class="top-prong">
             <div class="prong-dk"></div>
