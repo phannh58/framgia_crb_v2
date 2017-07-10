@@ -7,7 +7,6 @@ module UpdateEditAll
     @params = params
     @event = event
     @event_handler = event_handler
-    return if @params[:event][:exception_type] != Settings.event.edit_all
     parse_time_to_params_update
     @params
   end
