@@ -1,7 +1,7 @@
 module UpdateEditAll
-  private
-
   attr_accessor :params, :event, :event_handler
+
+  private
 
   def check_edit_all params, event, event_handler
     @params = params

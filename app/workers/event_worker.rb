@@ -8,6 +8,7 @@ class EventWorker
     @event = Event.find_by id: event_id
     return if @event.nil?
 
+    @google_calendar = @event.calendar.google_calendar_id
     @event_push = EventWorker.g_event_data @event
     @client = EventWorker.initialize_googleapi_client
 
@@ -18,29 +19,28 @@ class EventWorker
   private
 
   def insert_event
-    @result = @client.execute(api_method: api_method(:insert),
-      parameters: {calendarId: "primary"},
-      body: JSON.dump(@event_push),
-      headers: {"Content-Type" => "application/json"})
-    @event.update_attributes google_calendar_id: @result.data.iCalUID.as_json,
-      google_event_id: @result.data.id.as_json
+    @client.insert_event(@google_calendar, @event_push, send_notifications: true) do |res, err|
+      if err
+        # Handle error
+      else
+        @event.update_attributes google_event_id: res.i_cal_uid
+      end
+    end
   end
 
   def update_event
-    @client.execute(api_method: api_method(:update),
-      parameters: {calendarId: "primary", eventId: event.google_event_id},
-      body: JSON.dump(@event_push),
-      headers: {"Content-Type" => "application/json"})
+    @client.update_event(@google_calendar, @event.google_event_id, @event_push) do |res, err|
+      if err
+        # Handle error
+      end
+    end
   end
 
   def delete_event
-    @client.execute(api_method: api_method(:delete),
-      parameters: {calendarId: "primary", eventId: @event.google_event_id},
-      body: JSON.dump(@event_push[:attendees]),
-      headers: {"Content-Type" => "application/json"})
-  end
-
-  def api_method action
-    @client.discovered_api("calendar", "v3").events.send action
+    @client.delete_event(@google_calendar, @event.google_event_id) do |res, err|
+      if err
+        # Handle error
+      end
+    end
   end
 end
