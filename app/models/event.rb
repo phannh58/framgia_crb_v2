@@ -144,7 +144,7 @@ class Event < ApplicationRecord
   private
 
   def default_title
-    title = I18n.t('calendars.events.no_title')
+    @title = I18n.t('calendars.events.no_title')
   end
 
   def send_notify
@@ -192,20 +192,20 @@ class Event < ApplicationRecord
   end
 
   def push_event_to_google_calendar
-    return if google_calendar_id.blank?
-    return unless calendar_is_auto_push_to_google_calendar
+    return if calendar.google_calendar_id.blank?
+    return unless calendar.is_auto_push_to_google_calendar?
     EventWorker.perform_async id, "insert"
   end
 
   def update_event_on_google_calendar
-    return if google_calendar_id.blank?
-    return unless calendar_is_auto_push_to_google_calendar
+    return if calendar.google_calendar_id.blank?
+    return unless calendar.is_auto_push_to_google_calendar?
     EventWorker.perform_async id, "update"
   end
 
   def delete_event_on_google_calendar
-    return if google_calendar_id.blank?
-    return unless calendar_is_auto_push_to_google_calendar
+    return if calendar.google_calendar_id.blank?
+    return unless calendar.is_auto_push_to_google_calendar?
     EventWorker.perform_async id, "delete"
   end
 end
