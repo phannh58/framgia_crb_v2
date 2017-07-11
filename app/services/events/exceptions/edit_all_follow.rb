@@ -25,6 +25,7 @@ module Events
 
       def is_allow_duplicate_event?
         return true if @event.parent_id.nil?
+        return false if @event.parent_id.present? && @event.start_date.to_date == start_date.to_date
         return true if @event.edit_all_follow? && @event.start_date != start_date
       end
 

@@ -11,7 +11,9 @@ module Events
     def perform
       if delete_all?
         event = @event
-        event = @event.parent if @event.exception_type && @event.parent_id.blank?
+        if @event.exception_type && @event.parent_id.present?
+          event = @event.parent
+        end
         make_activity(@user, event, :destroy) if event.destroy
       else
         perform_repeat_event
@@ -25,7 +27,6 @@ module Events
       exception_time = @params[:exception_time]
       start_date_before_delete = @params[:start_date_before_delete]
       finish_date_before_delete = @params[:finish_date_before_delete]
-
       if unpersisted_event?
         parent = @event.parent_id.present? ? @event.event_parent : @event
         dup_event = parent.dup
@@ -48,6 +49,8 @@ module Events
         if delete_all_follow?
           event_exception_pre_nearest(parent, exception_time)
             .update(end_repeat: (exception_time.to_date - 1.day))
+          dup_event.start_repeat = exception_time
+          dup_event.old_exception_type = Event.exception_types[:delete_all_follow]
         end
         dup_event.save
       elsif delete_only? && (@event.edit_all_follow? || @event.parent?)
