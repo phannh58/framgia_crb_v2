@@ -159,30 +159,25 @@ class Event < ApplicationRecord
     return if !self.delete_only? || !self.delete_all_follow?
     return unless (parent = Event.find_by id: parent_id)
     parent.attendees.each do |attendee|
-      argv = {
-        user_id: attendee.user_id,
-        event_title: title,
-        event_start_date: start_date,
-        event_finish_date: finish_date,
-        event_exception_type: exception_type,
-        action_type: :delete_event
-      }
-      EmailWorker.perform_async argv
+      EmailWorker.perform_async argv_params(attendee.user_id, exception_type)
     end
   end
 
   def send_email_delete_no_repeat_event
     attendees.each do |attendee|
-      argv = {
-        user_id: attendee.user_id,
-        event_title: title,
-        event_start_date: start_date,
-        event_finish_date: finish_date,
-        event_exception_type: nil,
-        action_type: :delete_event
-      }
-      EmailWorker.perform_async argv
+      EmailWorker.perform_async argv_params(attendee.user_id)
     end
+  end
+
+  def argv_params user_id, exception_type = nil
+    {
+      user_id: user_id,
+      event_title: title,
+      event_start_date: start_date,
+      event_finish_date: finish_date,
+      event_exception_type: exception_type,
+      action_type: :delete_event
+    }
   end
 
   def valid_repeat_date
@@ -198,12 +193,14 @@ class Event < ApplicationRecord
   end
 
   def update_event_on_google_calendar
+    return if google_event_id.blank?
     return if calendar.google_calendar_id.blank?
     return unless calendar.is_auto_push_to_google_calendar?
     EventWorker.perform_async id, "update"
   end
 
   def delete_event_on_google_calendar
+    return if google_event_id.blank?
     return if calendar.google_calendar_id.blank?
     return unless calendar.is_auto_push_to_google_calendar?
     EventWorker.perform_async id, "delete"
