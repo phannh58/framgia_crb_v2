@@ -67,6 +67,7 @@ class EventsController < ApplicationController
   def edit
     if params[:fdata]
       @event.start_date = event_params["start_date"]
+      @event.start_repeat = event_params["start_date"]
       @event.finish_date = build_finish_date(event_params)
     end
     load_related_data

@@ -21,5 +21,5 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   alias facebook create
   alias google_oauth2 create
-  alias hr_system create
+  alias framgia create
 end

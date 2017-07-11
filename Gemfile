@@ -45,7 +45,7 @@ gem "fabrication"
 gem "mini_magick"
 gem "carrierwave"
 gem "tzinfo-data"
-gem "omniauth-hrsystem", git: "https://github.com/dieunb/omniauth-hrsystem.git"
+gem "omniauth-framgia", git: "git@github.com:framgia-education/omniauth-framgia.git"
 
 group :development, :test do
   # Call "byebug" anywhere in the code to stop execution and get a debugger console

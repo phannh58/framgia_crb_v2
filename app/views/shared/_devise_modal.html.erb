@@ -51,7 +51,7 @@
         <%= devise_error_messages! %>
         <div class="field" >
           <%= f.label :name, t(".label.user_name"), for: "signup_name" %>
-          <div class="input-group col-md-12">
+          <div class="input-group col-md-12 col-xs-12">
             <%= f.text_field :name, autofocus: true, placeholder: t(".user_name"),
               class: "form-control auto-validate-name", id: "signup_name",
               autocomplete: :off %>
