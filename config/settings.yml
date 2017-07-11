@@ -11,6 +11,7 @@ event:
   format_date_basic: "%Y%m%d"
   repeat_data: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thusday", "Friday", "Sartuday"]
   edit_all: "edit_all"
+  edit_all_follow: "edit_all_follow"
 notification:
   icon: "framgia-logo.png"
 repeat:

@@ -46,7 +46,8 @@
   <div class="row form-group">
     <div class="col-md-6">
       <%= f.label :is_auto_push_to_google_calendar do %>
-        <%= f.check_box :is_auto_push_to_google_calendar %>
+        <%= f.check_box :is_auto_push_to_google_calendar,
+          {checked: @calendar.is_auto_push_to_google_calendar?}, true, false %>
         <%= t(".auto_push_to_google_calendar")%>
       <% end %>
     </div>
@@ -55,7 +56,8 @@
   <div class="row form-group">
     <div class="col-md-6">
       <%= f.label :is_allow_overlap do %>
-        <%= f.check_box :is_allow_overlap %>
+        <%= f.check_box :is_allow_overlap,
+          {checked: @calendar.is_allow_overlap?}, true, false %>
         <%= t(".allow_overlap")%>
       <% end %>
     </div>
@@ -84,7 +86,9 @@
     <div class="divider"></div>
     <div class="row col-md-6">
       <label for="make_public">
-        <%= f.check_box :status, {id: "make_public"}, "share_public", "no_public" %>
+        <%= f.check_box :status,
+          {id: "make_public", checked: @calendar.share_public?},
+          "share_public", "no_public" %>
         <%= t "calendar.make_calendar_public" %>
       </label>
       <span><%= t "calendar.make_public_description" %></span>
