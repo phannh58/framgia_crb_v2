@@ -8,7 +8,7 @@ class Calendar < ApplicationRecord
 
   ATTRIBUTES_PARAMS = [
     :name, :number_of_seats, :google_calendar_id, :description, :color_id,
-    :parent_id, :status, :is_allow_overlap,
+    :parent_id, :status, :is_allow_overlap, :is_auto_push_to_google_calendar,
     user_calendars_attributes: %I[id user_id permission_id color_id _destroy]
   ].freeze
 
