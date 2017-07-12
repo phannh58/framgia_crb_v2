@@ -1,7 +1,6 @@
 module Events
   class UpdateService
     include MakeActivity
-    include UpdateEditAll
 
     attr_accessor :is_overlap, :event
 
@@ -19,17 +18,13 @@ module Events
     end
 
     def perform
-      if @params[:event][:exception_type] == Settings.event.edit_all
-        @params = check_edit_all @params, @event, @event_handler
-      end
-
       if @event.exist_repeat? && (@event.parent_id.nil? || (@event.parent_id && @event.edit_all_follow?))
         @params[:event] = @params[:event].merge(nhash)
       end
 
       return false if changed_time? && (@is_overlap = is_overlap?) && !@event.calendar.is_allow_overlap?
 
-      exception_service = Events::ExceptionService.new(@event, @params)
+      exception_service = Events::ExceptionService.new(@user, @event, @params)
 
       if exception_service.perform
         @event = exception_service.event

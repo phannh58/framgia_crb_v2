@@ -575,11 +575,11 @@
   * `event[:exception_type]`, type: string, option: edit-only/edit-all-follow/edit-all
   * `event[:end_repeat]`, type: datetime
   * `persisted`, type: interger
-  * `start_time_before_drag`, type:datetime
+  * `start_time_before_change`, type:datetime
 
 **Request example:**
 
-  * `PATCH: {"auth_token": "LThaQcMP5s_TBo_VgjWu", "event": {"title":"CRB","start_date":"2016-07-27T00:00:00.000Z", "finish_date":"2016-07-27T23:59:00.000Z", "exception_type":"edit_only", end_repeat": null}, "persisted":"0", "start_time_before_drag":null}`
+  * `PATCH: {"auth_token": "LThaQcMP5s_TBo_VgjWu", "event": {"title":"CRB","start_date":"2016-07-27T00:00:00.000Z", "finish_date":"2016-07-27T23:59:00.000Z", "exception_type":"edit_only", end_repeat": null}, "persisted":"0", "start_time_before_change":null}`
 
 **Response:**
 
@@ -617,7 +617,7 @@
         },
         "name":"Paris",
         "persisted":"0",
-        "start_time_before_drag":null
+        "start_time_before_change":null
       }`
 
   * **Response:**

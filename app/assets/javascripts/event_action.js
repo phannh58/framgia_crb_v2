@@ -23,8 +23,8 @@ function eventData(data) {
     editable: data.editable,
     persisted: data.persisted,
     isGoogleEvent: false,
-    start_time_before_drag: start_time,
-    finish_time_before_drag: end_time
+    start_time_before_change: start_time,
+    finish_time_before_change: end_time
   };
 }
 
@@ -171,13 +171,6 @@ $(document).on('click', '.btn-confirm', function() {
 });
 
 function deleteServerEvent(event, exception_type) {
-  var start_date_before_delete, finish_date_before_delete;
-
-  if (!event.allDay)
-    finish_date_before_delete = event.finish_time_before_drag;
-
-  start_date_before_delete = event.start_time_before_drag;
-
   if (event.end !== null)
     var finish_date = moment.tz(event.end.format(), 'YYYY-MM-DDTHH:mm:ss', timezone).format();
 
@@ -188,8 +181,8 @@ function deleteServerEvent(event, exception_type) {
       exception_type: exception_type,
       exception_time: moment.tz(event.start.format(), 'YYYY-MM-DDTHH:mm:ss', timezone).format(),
       finish_date: finish_date,
-      start_date_before_delete: start_date_before_delete,
-      finish_date_before_delete: finish_date_before_delete,
+      start_date_before_delete: event.start_time_before_change,
+      finish_date_before_delete: event.finish_time_before_change,
       persisted: event.persisted ? 1 : 0
     },
     dataType: 'json',
@@ -371,8 +364,8 @@ function updateServerEvent(event, allDay, exception_type, is_drop) {
     },
     is_drop: is_drop,
     persisted: event.persisted ? 1 : 0,
-    start_time_before_drag: event.start_time_before_drag,
-    finish_time_before_drag: event.finish_time_before_drag
+    start_time_before_change: event.start_time_before_change,
+    finish_time_before_change: event.finish_time_before_change
   };
 
   $.ajax({
@@ -451,8 +444,8 @@ function reRenderCurrentEvent() {
 
   if (_event === undefined) return;
 
-  _event.start = _event.start_time_before_drag;
-  _event.end = _event.finish_time_before_drag;
+  _event.start = _event.start_time_before_change;
+  _event.end = _event.finish_time_before_change;
 
   $calendar.fullCalendar('updateEvent', _event);
   $calendar.fullCalendar('renderEvent', _event, true);

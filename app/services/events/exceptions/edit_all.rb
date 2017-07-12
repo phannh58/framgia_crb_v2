@@ -5,22 +5,42 @@ module Events
         @event = event
         @params = params
         @parent = @event.parent.present? ? @event.parent : @event
+        @temp_event = Event.new event_params
       end
 
       def perform
-        handle_end_repeat_of_last_event
-        @exception_events = load_event_delete_only_and_old_exception_type
-
-        @event = @parent
-        @params[:event].delete :exception_type if @event.delete_only?
-        @params[:event].delete :start_repeat
+        return false if changed_start_repeat?
+        return false if @temp_event.end_repeat < @parent.start_repeat
 
         begin
           ActiveRecord::Base.transaction do
-            @exception_events.each{|event| event.update! old_exception_type: nil}
-            @event.update! event_params
+            if changed_repeat_type?
+              @parent.event_exceptions.each{|event| event.destroy!}
+              @parent.update_attributes event_params.merge({
+                exception_time: nil, exception_type: nil,
+                start_date: @parent.start_date, finish_date: @parent.finish_date,
+                start_repeat: @parent.start_repeat
+              })
+            else
+              # TÌm thằng gốc và update thông tin cho nó
+              @parent.update_attributes! event_params.merge({
+                exception_time: nil, exception_type: nil,
+                start_date: @parent.start_date, finish_date: @parent.finish_date,
+                start_repeat: @parent.start_repeat, end_repeat: @parent.end_repeat
+              })
+
+              # TÌm tất cả những thằng có excepton không phải là delete và update thêm thông tin cho nó
+              @parent.event_exceptions.not_delete_only.each do |event|
+                event.assign_attributes title: @parent.title,
+                  description: @parent.description
+                event.notifications = event.notifications + @parent.notifications
+                event.attendees = event.attendees + @parent.attendees
+                event.save!
+              end
+            end
           end
-        rescue
+        rescue ActiveRecord::RecordInvalid => exception
+          Rails.logger.info('----------------------> ERRORS!!!!')
         end
       end
 
@@ -30,38 +50,13 @@ module Events
         @params.require(:event).permit Event::ATTRIBUTES_PARAMS
       end
 
-      def handle_end_repeat_of_last_event
-        @exception_events = @parent.event_exceptions
-                                  .after_date(start_date.to_datetime)
-                                  .order(start_date: :desc)
-        return if @exception_events.blank?
-        @params[:event][:end_repeat] = reassign_end_repeat
+      def changed_repeat_type?
+        return false if @temp_event.repeat_type.nil?
+        @temp_event.repeat_type != @parent.repeat_type
       end
 
-      def load_event_delete_only_and_old_exception_type
-        @parent.event_exceptions.delete_only
-                                .old_exception_type_not_null
-                                .in_range(start_repeat, end_repeat)
-      end
-
-      def reassign_end_repeat
-        event_edit_all_follow = @exception_events.edit_all_follow.first
-        return events_edit_all_follow.end_repeat if event_edit_all_follow
-        delete_only = @exception_events.delete_only
-                                       .old_exception_edit_all_follow.first
-        return delete_only.end_repeat if delete_only
-      end
-
-      def start_date
-        @params[:event][:start_date]
-      end
-
-      def start_repeat
-        @params[:event][:start_repeat]
-      end
-
-      def end_repeat
-        @params[:event][:end_repeat]
+      def changed_start_repeat?
+        @temp_event.start_repeat.to_date != @temp_event.start_date.to_date
       end
     end
   end

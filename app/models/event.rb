@@ -47,9 +47,8 @@ class Event < ApplicationRecord
   delegate :name, :is_auto_push_to_google_calendar,
     to: :calendar, prefix: true, allow_nil: true
 
-  enum exception_type: [:delete_only, :delete_all_follow, :edit_only,
-    :edit_all_follow, :edit_all]
-  enum repeat_type: [:daily, :weekly, :monthly, :yearly]
+  enum exception_type: %i(delete_only delete_all_follow edit_only edit_all_follow edit_all)
+  enum repeat_type: %I[daily weekly monthly yearly]
 
   accepts_nested_attributes_for :attendees, allow_destroy: true
   accepts_nested_attributes_for :notification_events, allow_destroy: true

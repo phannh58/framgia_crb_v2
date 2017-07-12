@@ -2,77 +2,33 @@ module Events
   class DeleteService
     include MakeActivity
 
+    EXCEPTION_TYPE = %w(delete_only delete_all_follow delete_all).freeze
+
     def initialize user, event, params
       @event = event
       @params = params
       @user = user
+      @exception_type = @params[:exception_type] || @event.exception_type
+      @exception_time = @params[:exception_time] || @event.exception_time
     end
 
     def perform
-      if delete_all?
-        event = @event
-        event = @event.parent if @event.exception_type && @event.parent_id.blank?
-        make_activity(@user, event, :destroy) if event.destroy
-      else
-        perform_repeat_event
-      end
+      return false if @exception_time.blank? || @exception_type.blank?
+      send @exception_type
     end
 
     private
 
-    def perform_repeat_event
-      exception_type = @params[:exception_type]
-      exception_time = @params[:exception_time]
-      start_date_before_delete = @params[:start_date_before_delete]
-      finish_date_before_delete = @params[:finish_date_before_delete]
-
-      if unpersisted_event?
-        parent = @event.parent_id.present? ? @event.event_parent : @event
-        dup_event = parent.dup
-        dup_event.exception_type = exception_type
-        dup_event.exception_time = exception_time
-        dup_event.parent_id = parent.id
-        parent.attendees.each do |attendee|
-          dup_event.attendees.new(user_id: attendee.user_id,
-            event_id: dup_event.id)
-        end
-
-        if @event.all_day?
-          dup_event.start_date = exception_time.to_datetime.beginning_of_day
-          dup_event.finish_date = exception_time.to_datetime.end_of_day
-        else
-          dup_event.start_date = start_date_before_delete
-          dup_event.finish_date = finish_date_before_delete
-        end
-
-        if delete_all_follow?
-          event_exception_pre_nearest(parent, exception_time)
-            .update(end_repeat: (exception_time.to_date - 1.day))
-        end
-        dup_event.save
-      elsif delete_only? && (@event.edit_all_follow? || @event.parent?)
-        @event.old_exception_type = Event.exception_types[:edit_all_follow]
-      end
-      @event.exception_type = exception_type
-      @event.exception_time = exception_time
-      @event.save
+    def delete_only
+      Events::Exceptions::DeleteOnly.new(@event, @params).perform
     end
 
-    def unpersisted_event?
-      @params[:persisted].to_i.zero?
+    def delete_all_follow
+      Events::Exceptions::DeleteAllFollow.new(@event, @params).perform
     end
 
-    def event_exception_pre_nearest parent, exception_time
-      events = parent.event_exceptions
-                     .follow_pre_nearest(exception_time)
-                     .order(start_date: :desc)
-      !events.empty? ? events.first : parent
-    end
-
-    %w(delete_all delete_all_follow delete_only).each do |action_name|
-      define_method "#{action_name}?" do
-        action_name == @params[:exception_type]
-      end
+    def delete_all
+      Events::Exceptions::DeleteAll.new(@event).perform
     end
   end
 end
