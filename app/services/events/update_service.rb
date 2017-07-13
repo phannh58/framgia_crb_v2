@@ -36,10 +36,6 @@ module Events
 
     private
 
-    def event_params
-      @params.require(:event).permit Event::ATTRIBUTES_PARAMS
-    end
-
     def handle_event_params
       if @params[:repeat].blank?
         REPEAT_PARAMS.each{|attribute| @params[:event].delete attribute}
@@ -55,11 +51,11 @@ module Events
     end
 
     def start_repeat
-      event_params[:start_repeat] || event_params[:start_date]
+      @params[:event][:start_repeat] || @params[:event][:start_date]
     end
 
     def end_repeat
-      event_params[:end_repeat] || @event.end_repeat
+      @params[:event][:end_repeat] || @event.end_repeat
     end
 
     def changed_time?
@@ -74,7 +70,7 @@ module Events
 
     def nhash
       {
-        exception_time: event_params[:start_date],
+        exception_time: @params[:event][:start_date],
         start_repeat: start_repeat,
         end_repeat: end_repeat
       }

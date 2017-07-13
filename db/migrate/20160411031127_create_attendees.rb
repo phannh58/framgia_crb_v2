@@ -8,7 +8,8 @@ class CreateAttendees < ActiveRecord::Migration[5.0]
 
       t.timestamps null: false
     end
-    add_index :attendees, [:email, :event_id], unique: true
-    add_index :attendees, :user_id
+    add_index :attendees, :email 
+    add_index :attendees, :user_id 
+    add_index :attendees, :event_id
   end
 end

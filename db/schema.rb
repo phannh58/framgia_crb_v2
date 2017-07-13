@@ -38,7 +38,8 @@ ActiveRecord::Schema.define(version: 20170523063556) do
     t.integer  "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["email", "event_id"], name: "index_attendees_on_email_and_event_id", unique: true, using: :btree
+    t.index ["email"], name: "index_attendees_on_email", using: :btree
+    t.index ["event_id"], name: "index_attendees_on_event_id", using: :btree
     t.index ["user_id"], name: "index_attendees_on_user_id", using: :btree
   end
 
@@ -108,8 +109,6 @@ ActiveRecord::Schema.define(version: 20170523063556) do
   create_table "events", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "title"
     t.text     "description",        limit: 65535
-    t.string   "status"
-    t.string   "color"
     t.boolean  "all_day",                          default: false
     t.integer  "repeat_type"
     t.integer  "repeat_every"
@@ -132,6 +131,7 @@ ActiveRecord::Schema.define(version: 20170523063556) do
     t.index ["deleted_at"], name: "index_events_on_deleted_at", using: :btree
     t.index ["google_calendar_id"], name: "index_events_on_google_calendar_id", using: :btree
     t.index ["google_event_id"], name: "index_events_on_google_event_id", using: :btree
+    t.index ["parent_id"], name: "index_events_on_parent_id", using: :btree
     t.index ["user_id"], name: "index_events_on_user_id", using: :btree
   end
 
