@@ -138,8 +138,6 @@ function transformOptions(sourceOptions, start, end, timezone, calendar) {
         reportError('Google Calendar API: ' + data.error.message, data.error.errors);
       }
       else if (data.items) {
-        var colorArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-
         var resourceId = this.resourceId;
         $.each(data.items, function(i, entry) {
           var url = entry.htmlLink || null;
@@ -149,23 +147,23 @@ function transformOptions(sourceOptions, start, end, timezone, calendar) {
             url = injectQsComponent(url, 'ctz=' + timezoneArg);
           }
 
-          var randId = colorArray[Math.floor(Math.random() * colorArray.length)];
-
-          events.push({
-            id: entry.id,
-            title: entry.summary,
-            start: entry.start.dateTime || entry.start.date, // try timed. will fall back to all-day
-            end: entry.end.dateTime || entry.end.date, // same
-            resourceId: resourceId,
-            // url: url,
-            allDay: entry.start.date !== undefined,
-            isGoogleEvent: true,
-            className: ['color-' + (entry.colorId || randId), entry.id],
-            location: entry.location,
-            description: entry.description,
-            orgnaizer: entry.organizer.displayName || '',
-            link: url
-          });
+          if (entry.creator.email != "framgia-crb-system@framgia-crb-system.iam.gserviceaccount.com") {
+            events.push({
+              id: entry.id,
+              title: entry.summary,
+              start: entry.start.dateTime || entry.start.date, // try timed. will fall back to all-day
+              end: entry.end.dateTime || entry.end.date, // same
+              resourceId: resourceId,
+              // url: url,
+              allDay: entry.start.date !== undefined,
+              isGoogleEvent: true,
+              className: ['color-' + resourceId, entry.id],
+              location: entry.location,
+              description: entry.description,
+              orgnaizer: entry.organizer.displayName || '',
+              link: url
+            });
+          }
         });
 
         // call the success handler(s) and allow it to return a new events array

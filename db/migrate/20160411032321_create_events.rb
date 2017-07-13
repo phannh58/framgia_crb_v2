@@ -3,8 +3,6 @@ class CreateEvents < ActiveRecord::Migration[5.0]
     create_table :events do |t|
       t.string :title
       t.text :description
-      t.string :status
-      t.string :color
       t.boolean :all_day, default: false
       t.integer :repeat_type
       t.integer :repeat_every
@@ -25,5 +23,6 @@ class CreateEvents < ActiveRecord::Migration[5.0]
     end
     add_index :events, :google_event_id
     add_index :events, :google_calendar_id
+    add_index :events, :parent_id    
   end
 end

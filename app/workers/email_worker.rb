@@ -41,6 +41,6 @@ class EmailWorker
   def perform_invite_user argv
     user_id = argv["user_id"]
     organization_id = argv["organization_id"]
-    UserMailer.send_email_invite_to_join_organization(user_id, organization_id).deliver
+    UserMailer.invite_to_join_organization(user_id, organization_id).deliver
   end
 end
