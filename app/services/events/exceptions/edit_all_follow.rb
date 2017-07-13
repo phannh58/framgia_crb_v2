@@ -1,10 +1,11 @@
 module Events
   module Exceptions
     class EditAllFollow
-      def initialize event, params
+      def initialize user, event, params
+        @user = user
         @event = event
         @params = params
-        @parent = @event.parent.present? ? @event.parent : @event
+        @parent = @event.parent ? @event.parent : @event
         @temp_event = Event.new event_params
       end
 
@@ -14,16 +15,27 @@ module Events
 
         begin
           ActiveRecord::Base.transaction do
-            if @temp_event.end_repeat != @event.end_repeat
-              # Find all end after date @temp_event.start_date
-              load_events_after_start_date.destroy_all
-              # Update end repeat of parent event
-              @parent.update_attributes! end_repeat: (@temp_event.start_date - 1.day)
+            # Find all end after date @temp_event.start_date
+            load_events_after_start_date.each{|event| event.destroy!}
+
+            if (@temp_event.end_repeat > @event.end_repeat) || changed_event_time?
+              # # Update end repeat of parent event
+              # @parent.update_attributes! end_repeat: (@temp_event.start_date - 1.day)
               # Creat new evert with new repeat
+              @temp_event.assign_attributes exception_time: nil,
+                exception_type: nil,
+                calendar_id: @event.calendar_id,
+                repeat_every: @event.repeat_every,
+                repeat_type: @event.repeat_type,
+                title: @event.title,
+                user_id: @user.id
               @temp_event.save!
             else
-              update_event_exception_pre_nearest
-              @event = duplicate_event if is_allow_duplicate_event?
+              unless @event.edit_all_follow?
+                # update_event_exception_pre_nearest
+                @event = duplicate_event if is_allow_duplicate_event?
+              end
+              @event.user_id = @user.id
               @event.update_attributes! event_params
             end
           end
@@ -72,6 +84,12 @@ module Events
 
       def changed_start_repeat?
         @temp_event.start_repeat.to_date != @temp_event.start_date.to_date
+      end
+
+      def changed_event_time?
+        event = Event.new start_date: @params[:start_time_before_change],
+          finish_date: @params[:finish_time_before_change]
+        event.start_date != @temp_event.start_date || event.finish_date != @temp_event.finish_date
       end
     end
   end

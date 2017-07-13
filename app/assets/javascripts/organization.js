@@ -22,12 +22,12 @@ $(document).ready(function(){
     var url = $(this).attr('data-url');
     var tab = $(this).attr('data-tab');
 
-    if (url && tab == 'activities') {
+    if (url) {
       $.ajax({
         url: url,
         method: 'get',
         success: function(result){
-          $('#activities').html(result.content);
+          $('#' + tab).html(result.content);
         },
         error: function(error){
           alert(error);

@@ -244,9 +244,9 @@ Devise.setup do |config|
   config.omniauth :google_oauth2, ENV["GOOGLE_KEY"], ENV["GOOGLE_SECRET"], scope: "email"
   config.omniauth :framgia, ENV["HR_KEY"], ENV["HR_SECRET"],
     client_options: {
-      site: "http://localhost:4000",
-      authorize_url: "http://localhost:4000/authorize",
-      token_url: "http://localhost:4000/auth/access_token"
+      site: "http://edev.framgia.vn",
+      authorize_url: "http://edev.framgia.vn/authorize",
+      token_url: "http://edev.framgia.vn/auth/access_token"
     }
 
   # ==> Warden configuration

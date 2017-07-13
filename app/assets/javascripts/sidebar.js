@@ -20,6 +20,7 @@ $(document).on('ready', function() {
       hiddenDialog('popup');
       hiddenDialog('dialog-update-popup');
       var dateParse = Date.parse(dateText);
+      $calendar.fullCalendar('changeView', (calendarViewContext == 'scheduler' ? 'timelineDay' : 'agendaDay'));
       $calendar.fullCalendar('gotoDate', new Date(dateParse));
       $(this).datepicker('setDate', new Date(dateParse));
     },
