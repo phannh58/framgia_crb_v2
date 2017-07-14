@@ -11,7 +11,7 @@ module FullCalendar
 
     attr_accessor(*ATTRS)
 
-    delegate :title, :description, :status, :all_day,
+    delegate :title, :description, :all_day,
       :delete_only?, :delete_all_follow?,
       :repeat_type, :repeat_every, :user_id, :start_repeat, :end_repeat,
       :exception_time, :exception_type, to: :event, allow_nil: true
