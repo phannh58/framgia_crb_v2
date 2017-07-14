@@ -118,14 +118,12 @@ class CalendarService
       end
       @events << FullCalendar::Event.new(edit_event, @user)
     end
-
     edit_all_follow_events = event.event_exceptions.edit_all_follow
-
     edit_all_follow_events.each do |edit_event|
       @events.delete_if do |fevent|
-        fevent.event == event && fevent.start_date.to_date == edit_event.exception_time.to_date
+        fevent.event == event && fevent.start_date.to_date >= edit_event.exception_time.to_date
       end
-      @events << FullCalendar::Event.new(edit_event, @user)
+      # @events << FullCalendar::Event.new(edit_event, @user)
     end
   end
 end

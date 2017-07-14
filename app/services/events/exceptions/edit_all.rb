@@ -23,20 +23,23 @@ module Events
               })
             else
               # TÌm thằng gốc và update thông tin cho nó
+              title = @event.title == @temp_event.title ? @parent.title : @temp_event.title
               @parent.update_attributes! event_params.merge({
-                exception_time: nil, exception_type: nil,
+                title: title, exception_time: nil, exception_type: nil,
                 start_date: @parent.start_date, finish_date: @parent.finish_date,
                 start_repeat: @parent.start_repeat, end_repeat: @parent.end_repeat
               })
 
               # TÌm tất cả những thằng có excepton không phải là delete và update thêm thông tin cho nó
               @parent.event_exceptions.not_delete_only.each do |event|
-                event.assign_attributes title: @parent.title,
+                title = @event.title == @temp_event.title ? event.title : @temp_event.title
+                event.assign_attributes title: title,
                   description: @parent.description
                 event.notifications = event.notifications + @parent.notifications
                 event.attendees = event.attendees + @parent.attendees
                 event.save!
               end
+              @parent.attendees += @temp_event.attendees if @event.exception_type.present?
             end
           end
         rescue ActiveRecord::RecordInvalid => exception

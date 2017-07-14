@@ -21,7 +21,6 @@ module Events
       if @event.exist_repeat? && (@event.parent_id.nil? || (@event.parent_id && @event.edit_all_follow?))
         @params[:event] = @params[:event].merge(nhash)
       end
-
       return false if changed_time? && (@is_overlap = is_overlap?) && !@event.calendar.is_allow_overlap?
 
       exception_service = Events::ExceptionService.new(@user, @event, @params)

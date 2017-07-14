@@ -17,7 +17,7 @@ module Events
           ActiveRecord::Base.transaction do
             # Find all end after date @temp_event.start_date
             load_events_after_start_date.each{|event| event.destroy!}
-
+            binding.pry
             if (@temp_event.end_repeat > @event.end_repeat) || changed_event_time?
               # # Update end repeat of parent event
               # @parent.update_attributes! end_repeat: (@temp_event.start_date - 1.day)
@@ -32,11 +32,13 @@ module Events
               @temp_event.save!
             else
               unless @event.edit_all_follow?
+                binding.pry
                 # update_event_exception_pre_nearest
                 @event = duplicate_event if is_allow_duplicate_event?
               end
               @event.user_id = @user.id
               @event.update_attributes! event_params
+              @event.attendees += @parent.attendees
             end
           end
         rescue ActiveRecord::RecordInvalid => exception
