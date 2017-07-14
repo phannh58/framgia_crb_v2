@@ -11,7 +11,7 @@ class Event < ApplicationRecord
   after_update :update_event_on_google_calendar
   before_destroy :delete_event_on_google_calendar
 
-  ATTRIBUTES_PARAMS = [:title, :description, :status, :color, :all_day,
+  ATTRIBUTES_PARAMS = [:title, :description, :color, :all_day,
     :repeat_type, :repeat_every, :user_id, :calendar_id, :start_date,
     :finish_date, :start_repeat, :end_repeat, :exception_type, :exception_time,
     attendees_attributes: [:id, :email, :_destroy, :user_id],
