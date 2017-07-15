@@ -71,7 +71,8 @@
   <%= render "calendars/sidebar_menu" %>
 
   <% if user_signed_in? %>
-    <div id="dialog_overlap_confirm" class="hidden" title="<%= t 'events.overlap.content' %>"></div>
+    <div id="dialog-notification" class="text-warning" title="<%= t 'events.dialog_notification.title' %>">
+    </div>
     <%= render "events/dialog_form" %>
     <%= confirm_popup_repeat_events t("events.repeat_dialog.delete") %>
     <%= confirm_popup_repeat_events t("events.repeat_dialog.edit") %>

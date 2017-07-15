@@ -25,8 +25,12 @@ $(document).on('ready', function() {
     $('#event_start_date').val(moment.tz(start_datetime, 'DD-MM-YYYY hh:mma', timezone).format());
     $('#event_finish_date').val(moment.tz(finish_datetime, 'DD-MM-YYYY hh:mma', timezone).format());
 
-    $('#event_start_repeat').val(start_date_repeat.val());
-    $('#event_end_repeat').val(end_date_repeat.val());
+    var start_datetime_repeat = start_date_repeat.val() + ' ' + start_time.val();
+    var end_datetime_repeat = end_date_repeat.val() + ' ' + finish_time.val();
+
+    $('#event_start_repeat').val(moment.tz(start_datetime_repeat, 'DD-MM-YYYY hh:mma', timezone).format());
+    $('#event_end_repeat').val(moment.tz(end_datetime_repeat, 'DD-MM-YYYY hh:mma', timezone).format());
+
     $('.all-day').show();
   });
 });

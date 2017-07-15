@@ -22,13 +22,16 @@
       <% end %>
     </div>
 
-    <div class="main-event-form">
+    <div class="col-md-6 col-xs-12 main-event-form">
       <div class="form-group">
         <%= f.label :title, t("events.labels.title") %>
         <%= f.text_field :title, placeholder: t("events.placeholder.new_event"),
           autofocus: true, required: true, class: "form-control" %>
       </div>
       <div class="form-group datetime" id="dateTime">
+        <%= hidden_field_tag :start_time_before_change, value: @event.start_date %>
+        <%= hidden_field_tag :finish_time_before_change, value: @event.finish_date %>
+
         <%= f.hidden_field :start_date %>
         <%= f.hidden_field :finish_date %>
         <%= text_field_tag :start_date,
@@ -68,49 +71,42 @@
         </div>
       </div>
 
-      <div class="attendee-selection form-group">
-        <div class="form-attendee">
-          <div class="form-group">
-            <label for="load-attendee"><%= t "calendar.attendee" %></label>
-            <%= text_field_tag :term, params["term"],
-              class: "attendee-email form-control", placeholder: "Enter attendee email"  %>
-            <button type="button" class="add-attendee btn button blue">Add Attendee</button>
-          </div>
-
-          <div class="form-group" id="list-attendee">
-            <% @event.attendees.each_with_index do |attendee, key| %>
-              <div class="group_attendee" id="group_attendee_<%= key %>">
-                <input type="hidden" name="event[attendees_attributes][<%= key %>][email]" value="<%= attendee.email %>"></input>
-                <input type="hidden" name="event[attendees_attributes][<%= key %>][_destroy]" value=false></input>
-                <input type="hidden" name="event[attendees_attributes][<%= key %>][user_id]" value="<%= attendee.user_id %>"></input>
-                <input type="hidden" name="event[attendees_attributes][<%= key %>][id]" value="<%= attendee.id %>"></input>
-                <li><%= attendee.email %></li>
-                <span class="remove_attendee">
-                  <i class="fa fa-times" aria-hidden="true"></i>
-                </span>
-              </div>
-            <% end %>
-            <div class="group_attendee" style="display: none" id="group_attendee_<%= @event.attendees.count %>">
-              <input type="hidden" name="event[attendees_attributes][<%= @event.attendees.count %>][email]" value="email"></input>
-              <input type="hidden" name="event[attendees_attributes][<%= @event.attendees.count %>][_destroy]" value=true></input>
-              <input type="hidden" name="event[attendees_attributes][<%= @event.attendees.count %>][user_id]" value="-1"></input>
-              <li>email</li>
-              <span class="remove_attendee">
-                <i class="fa fa-times" aria-hidden="true"></i>
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
       <div class="form-group" id="calendar">
         <%= f.label :calendar_id, t("events.labels.calendar") %>
         <%= f.collection_select :calendar_id, @calendars, :id, :name, {},
           selected: @event.calendar.try(:id), class: "form-control" %>
       </div>
+
+      <div class="form-group">
+        <label for="load-attendee"><%= t "calendar.attendee" %></label>
+
+        <div class="row">
+          <div class="col-md-9 col-xs-12">
+            <div class="input-group">
+              <input type="text" class="form-control attendee-email" name="term", placeholder="Search for...">
+              <span class="input-group-btn">
+                <button class="btn btn-primary add-attendee" type="button">
+                  <i class="fa fa-plus" aria-hidden="true"></i> <%= t(".add") %>
+                </button>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-9 col-xs-12" id="list-attendee">
+            <% @event.attendees.each do |attendee| %>
+              <%= render "attendee", email: attendee.email %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
       <div class="form-group">
         <%= f.label :description, t("events.labels.description") %>
         <%= f.text_area :description, class: "form-control", placeholder: t(".description") %>
       </div>
+
       <div class="form-group">
         <p><%= f.label :notifications %> </p>
         <div class="notify">
@@ -128,7 +124,8 @@
       </div>
     </div>
     <%= f.hidden_field :exception_type, class: "exception_type" %>
-    <div id="dialog_overlap_confirm" class="hidden" title="<%= t 'events.overlap.content' %>"></div>
+    <div id="dialog-notification" class="text-warning" title="<%= t 'events.dialog_notification.title' %>">
+    </div>
     <%= render "events/dialog_repeat_form", f: f %>
 
     <%= confirm_popup_repeat_events t("events.repeat_dialog.edit") %>

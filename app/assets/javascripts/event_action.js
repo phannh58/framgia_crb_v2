@@ -251,7 +251,7 @@ $('form.event-form').submit(function(event) {
     data: $(this).serialize(),
     success: function(data) {
       if (data.is_overlap) {
-        overlapConfirmation(form);
+        confirmationMessage(I18n.t('events.dialog_notification.overlap_time'));
       } else if (data.is_errors) {
         var $errorsTitle = $('.error-title');
         $errorsTitle.text(I18n.t('events.dialog.title_error'));
@@ -268,60 +268,36 @@ $('form.event-form').submit(function(event) {
         }
       }
     },
-    error: function (jqXHR) {
-      if (jqXHR.status === 500) {
-        alert('Internal error: ' + jqXHR.responseText);
-      } else {
-        alert('Unexpected error!!!');
-      }
+    error: function() {
+      confirmationMessage(I18n.t('events.dialog_notification.content'));
     }
   });
 });
 
-function overlapConfirmation(form) {
-  var dialogOverlapConfirm = $('#dialog_overlap_confirm');
-  dialogOverlapConfirm.dialog({
+function confirmationMessage(content) {
+  var dialogNotification = $('#dialog-notification');
+  dialogNotification.html('<p clas="text-warning">' + content + '</p>');
+
+  dialogNotification.dialog({
     autoOpen: false,
     modal: true,
     closeOnEscape: false,
     resizable: false,
     height: 'auto',
-    width: 400
-  });
-  dialogOverlapConfirm.dialog({
-    buttons : {
-      // 'Confirm' : function() {
-      //   $('#allow-overlap').val('true');
-      //   form.find('input[name="_method"]').remove();
-      //   $.ajax({
-      //     type: 'POST',
-      //     url: '/events',
-      //     dataType: 'json',
-      //     data: form.serialize(),
-      //     success: function(data) {
-      //       if ($calendar.attr('data-reload-page') == 'false') {
-      //         addEventToCalendar(data);
-      //         $('#allow-overlap').val('false');
-      //         dialogOverlapConfirm.dialog('close');
-      //       } else {
-      //         window.history.back();
-      //       }
-      //     },
-      //     error: function (jqXHR) {
-      //       if (jqXHR.status === 500) {
-      //         alert('Internal error: ' + jqXHR.responseText);
-      //       } else {
-      //         alert('Unexpected error!');
-      //       }
-      //     }
-      //   });
-      // },
-      'Cancel' : function() {
+    width: 400,
+    icon: 'ui-icon-alert',
+    open: function(){
+      dialogNotification.show();
+    },
+    buttons: {
+      'OK' : function() {
+        dialogNotification.hide();
         $(this).dialog('close');
       }
     }
   });
-  dialogOverlapConfirm.dialog('open');
+
+  dialogNotification.dialog('open');
 }
 
 function addEventToCalendar(data) {
@@ -383,39 +359,8 @@ function updateServerEvent(event, allDay, exception_type, is_drop) {
         $calendar.fullCalendar('renderEvent', eventData(data), true);
       }
     },
-    error: function(data) {
-      if (data.status == 422) {
-        var dialogOverlap = $('#dialog_overlap_confirm');
-        dialogOverlap.dialog({
-          autoOpen: false,
-          modal: true,
-          closeOnEscape: false,
-          resizable: false,
-          height: 'auto',
-          width: 400
-        });
-        dialogOverlap.dialog({
-          buttons : {
-            // 'Confirm' : function() {
-            //   dataUpdate.allow_overlap = 'true';
-            //   $.ajax({
-            //     type: 'PATCH',
-            //     url: '/events/' + event.event_id,
-            //     dataType: 'json',
-            //     data: dataUpdate,
-            //     success: function() {
-            //       $('#dialog_overlap').dialog('close');
-            //     }
-            //   });
-            // },
-            'Cancel' : function() {
-              reRenderCurrentEvent();
-              $(this).dialog('close');
-            }
-          }
-        });
-        dialogOverlap.dialog('open');
-      }
+    error: function() {
+      confirmationMessage(I18n.t('events.dialog_notification.content'));
     }
   });
 }

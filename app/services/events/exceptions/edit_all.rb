@@ -16,13 +16,15 @@ module Events
           ActiveRecord::Base.transaction do
             if changed_repeat_type?
               @parent.event_exceptions.each{|event| event.destroy!}
-              @parent.update_attributes event_params.merge({
+              make_and_assign_attendees @parent
+              @parent.update_attributes! event_params.merge({
                 exception_time: nil, exception_type: nil,
                 start_date: @parent.start_date, finish_date: @parent.finish_date,
                 start_repeat: @parent.start_repeat
               })
             else
               # TÌm thằng gốc và update thông tin cho nó
+              make_and_assign_attendees @parent
               @parent.update_attributes! event_params.merge({
                 exception_time: nil, exception_type: nil,
                 start_date: @parent.start_date, finish_date: @parent.finish_date,
@@ -31,6 +33,7 @@ module Events
 
               # TÌm tất cả những thằng có excepton không phải là delete và update thêm thông tin cho nó
               @parent.event_exceptions.not_delete_only.each do |event|
+                make_and_assign_attendees event
                 event.assign_attributes title: @parent.title,
                   description: @parent.description
                 event.notifications = event.notifications + @parent.notifications
@@ -57,6 +60,36 @@ module Events
 
       def changed_start_repeat?
         @temp_event.start_repeat.to_date != @temp_event.start_date.to_date
+      end
+
+      def attendee_emails
+        return [] if @params[:attendee].blank?
+        return @params[:attendee][:emails]
+      end
+
+      def make_and_assign_attendees event
+        users = User.where(email: attendee_emails).select(:email, :id)
+        attendees = Attendee.where(email: attendee_emails)
+        emails = users.map(&:email) + attendees.map(&:email)
+
+        users.each do |user|
+          attendees += [Attendee.find_or_initialize_by(user_id: user.id)]
+        end
+
+        attendee_emails.each do |email|
+          next if emails.include?(email)
+          attendees += [Attendee.new(email: email)]
+        end
+
+        if event.parent? && event.is_repeat?
+          @attendees_will_delete = event.attendees.to_a - attendees.uniq
+        elsif event.parent.present?
+          attendees_will_delete = @attendees_will_delete || []
+          attendees_will_add = event.attendees + attendees - attendees_will_delete
+          return event.attendees = attendees_will_add
+        end
+
+        event.attendees = attendees.uniq
       end
     end
   end

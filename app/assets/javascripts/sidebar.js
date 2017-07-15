@@ -4,7 +4,6 @@ $(document).on('ready', function() {
 
   $('.fc-prev-button, .fc-next-button, .fc-today-button').click(function() {
     var moment = $calendar.fullCalendar('getDate');
-    $miniCalendar.datepicker();
     $miniCalendar.datepicker('setDate', new Date(moment.format('MM/DD/YYYY')));
   });
 
@@ -14,7 +13,13 @@ $(document).on('ready', function() {
     selectOtherMonths: true,
     changeMonth: true,
     changeYear: true,
-    beforeShowDay: highlightDays,
+    beforeShowDay: function(date) {
+      var event = $calendar.fullCalendar('clientEvents', function(event) {
+        return moment(event._start).format('MM/DD/YYYY') == moment(date).format('MM/DD/YYYY');
+      });
+
+      return [true, event.length > 0 ? 'highlight' : ''];
+    },
     onSelect: function(dateText) {
       hiddenDialog('new-event-dialog');
       hiddenDialog('popup');
@@ -33,17 +38,6 @@ $(document).on('ready', function() {
       $(this).datepicker('setDate', selectedDate);
     }
   });
-
-  function highlightDays(date) {
-    var events = $calendar.fullCalendar('clientEvents');
-
-    for (var i = 0; i < events.length; i++) {
-      if (moment(events[i]._start).format('MM/DD/YYYY') == moment(date).format('MM/DD/YYYY')) {
-        return [true, 'highlight'];
-      }
-    }
-    return [true, ''];
-  }
 
   $('.create').click(function() {
     if ($(this).parent().hasClass('open')) {
@@ -139,10 +133,6 @@ $(document).on('ready', function() {
   $('.clst-menu-child').click(function() {
     var windowH = $(window).height();
     var position = $(this).offset();
-    // if ($(this).find('.sub').length > 0)
-    //   $('#create-sub-calendar').parent().addClass('hidden-menu');
-    // else
-    //   $('#create-sub-calendar').parent().removeClass('hidden-menu');
 
     $('#id-of-calendar').html($(this).attr('id'));
     var selectedColorId = $(this).attr('selected_color_id');

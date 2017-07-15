@@ -1,7 +1,5 @@
 module Events
   class UpdateService
-    include MakeActivity
-
     attr_accessor :is_overlap, :event
 
     REPEAT_PARAMS = %i(repeat_type repeat_every start_repeat end_repeat
@@ -28,7 +26,6 @@ module Events
 
       if exception_service.perform
         @event = exception_service.event
-        make_activity @user, @event, :update
         return true
       end
       false

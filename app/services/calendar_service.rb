@@ -8,7 +8,7 @@ class CalendarService
 
   def repeat_data
     event_no_repeats = @base_events.select do |event|
-      event.repeat_type.nil? && event.not_delete_only?
+      event.repeat_type.nil? && event.not_delete_only? && event.parent_id.nil?
     end
 
     event_no_repeats.each do |event|
@@ -26,7 +26,7 @@ class CalendarService
   def generate_event
     event = @base_events.first
 
-    return [] if event.delete_only? || event.delete_all_follow?
+    return [] if event.delete_only?
 
     if event.is_repeat? && !event.edit_only?
       generate_repeat_from_event_parent event
@@ -57,6 +57,7 @@ class CalendarService
   def repeat_daily event
     repeat_dates = event.start_repeat.to_date
          .step(event.end_repeat.to_date, event.repeat_every).to_a
+
     repeat_dates.each do |repeat_date|
       event_temp = FullCalendar::Event.new event, @user
       event_temp.update_info(repeat_date)
@@ -104,6 +105,7 @@ class CalendarService
 
     delete_only_events.each do |delete_event|
       @events.delete_if do |fevent|
+        parent = fevent.event.parent ? fevent.event.parent : fevent.event
         fevent.event == event && fevent.start_date.to_date == delete_event.exception_time.to_date
       end
     end
@@ -114,7 +116,8 @@ class CalendarService
 
     edit_only_events.each do |edit_event|
       @events.delete_if do |fevent|
-        fevent.event == event && fevent.start_date.to_date == edit_event.exception_time.to_date
+        parent = fevent.event.parent ? fevent.event.parent : fevent.event
+        fevent.event == parent && fevent.start_date.to_date == edit_event.exception_time.to_date
       end
       @events << FullCalendar::Event.new(edit_event, @user)
     end
@@ -123,9 +126,9 @@ class CalendarService
 
     edit_all_follow_events.each do |edit_event|
       @events.delete_if do |fevent|
-        fevent.event == event && fevent.start_date.to_date == edit_event.exception_time.to_date
+        parent = fevent.event.parent ? fevent.event.parent : fevent.event
+        fevent.event == event && fevent.start_date.to_date >= edit_event.exception_time.to_date
       end
-      @events << FullCalendar::Event.new(edit_event, @user)
     end
   end
 end
