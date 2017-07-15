@@ -201,24 +201,6 @@ UNUSED.gcal-contenteditable-textinput.textarea {
   .main-event-form {
     display: inline-block;
     padding-left: 0;
-    width: 600px;
-  }
-
-  .form-attendee {
-    bottom: 0;
-    position: absolute;
-    right: -350px;
-    top: 0;
-
-    .add-attendee {
-      margin-bottom: 0;
-    }
-
-    .form-control {
-      display: inline-block;
-      margin: 0;
-      width: 200px;
-    }
   }
 
   .form-group {
@@ -744,23 +726,6 @@ UNUSED.gcal-contenteditable-textinput.textarea {
   text-decoration: none;
 }
 
-.group_attendee {
-  display: block;
-  margin-bottom: 5px;
-
-  li {
-    display: inline-block;
-  }
-
-  .remove_attendee {
-    float: right;
-
-    &:hover {
-      cursor: pointer;
-    }
-  }
-}
-
 .hidden {
   display: none;
 }
@@ -809,8 +774,4 @@ UNUSED.gcal-contenteditable-textinput.textarea {
     display: inline;
     width: 90px;
   }
-}
-
-.attendee-selection {
-  position: relative;
 }

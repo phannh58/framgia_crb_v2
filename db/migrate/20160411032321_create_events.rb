@@ -23,6 +23,6 @@ class CreateEvents < ActiveRecord::Migration[5.0]
     end
     add_index :events, :google_event_id
     add_index :events, :google_calendar_id
-    add_index :events, :parent_id    
+    add_index :events, :parent_id
   end
 end

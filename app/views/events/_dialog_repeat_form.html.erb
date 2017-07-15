@@ -28,7 +28,7 @@
               <%= f.text_field :start_repeat,
                 value: datetime_format(@event.start_repeat, "short_date"),
                 required: false, class: "date start date-time form-control",
-                id: "start-date-repeat", disabled: true %>
+                id: "start-date-repeat", name: "start_repeat", disabled: true %>
             </td>
           </tr>
           <tr>
@@ -39,7 +39,7 @@
                 <%= f.text_field :end_repeat,
                   value: datetime_format(@event.end_repeat, "short_date"),
                   required: false, class: "date finish date-time form-control",
-                  id: "end-date-repeat" %>
+                  id: "end-date-repeat", name: "end_repeat" %>
               </span>
             </td>
           </tr>

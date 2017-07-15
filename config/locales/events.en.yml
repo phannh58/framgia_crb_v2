@@ -12,6 +12,7 @@ en:
       repeat: "Repeat"
       repeat_setting: *repeat_setting
       description: "Description"
+      add_attendee: "Add"
     dialog_repeat_form:
       repeat_setting: *repeat_setting
       repeats: "Repeats"
@@ -166,7 +167,9 @@ en:
       remind_edit_event: "Event is edited!"
       remind_edit_all_event: "All Event is edited!"
       remind_edit_all_following_event: "All The Following Events is edited"
-    overlap:
-      content: "Event overlap time!"
+    dialog_notification:
+      title: "Warning!!!"
+      content: "OOP, Have a error, please try again!!!"
+      overlap_time: "Overlap time, please choose another time!"
     datetime: "%m-%d-%Y %H:%M %p"
     framgia_crb_system: "Framgia CRB System"

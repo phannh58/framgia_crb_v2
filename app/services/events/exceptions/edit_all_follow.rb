@@ -18,9 +18,9 @@ module Events
             # Find all end after date @temp_event.start_date
             load_events_after_start_date.each{|event| event.destroy!}
 
+            # Tach ra khoi chuoi neu co thay doi ve repeat hoac thay doi ve time
             if (@temp_event.end_repeat > @event.end_repeat) || changed_event_time?
-              # # Update end repeat of parent event
-              # @parent.update_attributes! end_repeat: (@temp_event.start_date - 1.day)
+              make_and_assign_attendees @temp_event
               # Creat new evert with new repeat
               @temp_event.assign_attributes exception_time: nil,
                 exception_type: nil,
@@ -36,6 +36,7 @@ module Events
                 @event = duplicate_event if is_allow_duplicate_event?
               end
               @event.user_id = @user.id
+              make_and_assign_attendees @event
               @event.update_attributes! event_params
             end
           end
@@ -90,6 +91,27 @@ module Events
         event = Event.new start_date: @params[:start_time_before_change],
           finish_date: @params[:finish_time_before_change]
         event.start_date != @temp_event.start_date || event.finish_date != @temp_event.finish_date
+      end
+
+      def attendee_emails
+        return [] if @params[:attendee].blank?
+        return @params[:attendee][:emails]
+      end
+
+      def make_and_assign_attendees event
+        users = User.where(email: attendee_emails).select(:email, :id)
+        attendees = Attendee.where(email: attendee_emails)
+        emails = users.map(&:email) + attendees.map(&:email)
+
+        users.each do |user|
+          attendees += [Attendee.find_or_initialize_by(user_id: user.id)]
+        end
+
+        attendee_emails.each do |email|
+          next if emails.include?(email)
+          attendees += [Attendee.new(email: email)]
+        end
+        event.attendees = attendees.uniq
       end
     end
   end

@@ -18,7 +18,8 @@ class Event < ApplicationRecord
     repeat_ons_attributes: [:id, :days_of_week_id, :_destroy],
     notification_events_attributes: [:id, :notification_id, :_destroy]].freeze
 
-  has_many :attendees, dependent: :destroy
+  has_many :event_attendees, dependent: :destroy
+  has_many :attendees, through: :event_attendees
   has_many :users, through: :attendees
   has_many :repeat_ons, dependent: :destroy
   has_many :days_of_weeks, through: :repeat_ons
@@ -50,9 +51,10 @@ class Event < ApplicationRecord
   enum exception_type: %i(delete_only delete_all_follow edit_only edit_all_follow edit_all)
   enum repeat_type: %I[daily weekly monthly yearly]
 
-  accepts_nested_attributes_for :attendees, allow_destroy: true
+  accepts_nested_attributes_for :event_attendees, allow_destroy: true
   accepts_nested_attributes_for :notification_events, allow_destroy: true
-  accepts_nested_attributes_for :repeat_ons, allow_destroy: true
+  accepts_nested_attributes_for :repeat_ons, allow_destroy: true,
+    reject_if: proc {self.repeat_type.nil?}
 
   scope :in_calendars, ->(calendar_ids) do
     where("events.calendar_id IN (?)", calendar_ids)
@@ -62,12 +64,11 @@ class Event < ApplicationRecord
       selected_columns = (Event.attribute_names - ["calendar_id"]).map! do |column|
         "events.#{column}"
       end.join(", ")
-
-      select("#{selected_columns}, at.user_id as attendee_user_id, \n
-        at.event_id as attendee_event_id, calendars.id as calendar_id")
-        .joins("INNER JOIN attendees as at ON events.id = at.event_id")
-        .joins("INNER JOIN calendars ON at.email = calendars.address")
-        .where("at.user_id = ?", user.id)
+      Event.none
+      # select("#{selected_columns}, calendars.id as calendar_id")
+        # .joins("INNER JOIN attendees as at ON events.id = at.event_id")
+        # .joins("INNER JOIN calendars ON at.email = calendars.address")
+        # .where("at.user_id = ?", user.id)
     else
       Event.none
     end

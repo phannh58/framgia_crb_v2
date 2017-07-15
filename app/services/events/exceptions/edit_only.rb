@@ -5,7 +5,7 @@ module Events
         @user = user
         @event = event
         @params = params
-        @temp_event = Event.new event_params
+        @temp_event = Event.new event_params.delete_if{|key, _| key == :repeat_ons_attributes}
       end
 
       def perform
@@ -33,6 +33,8 @@ module Events
 
             new_event = edited_self? ? @event : @event.dup
             new_event.user_id = @user.id
+
+            make_and_assign_attendees new_event
 
             if changed_event_time?
               new_event.update_attributes! event_params.merge({
@@ -70,6 +72,27 @@ module Events
 
       def edited_self?
         @event.start_date == @temp_event.start_repeat
+      end
+
+      def attendee_emails
+        return [] if @params[:attendee].blank?
+        return @params[:attendee][:emails]
+      end
+
+      def make_and_assign_attendees event
+        users = User.where(email: attendee_emails).select(:email, :id)
+        attendees = Attendee.where(email: attendee_emails)
+        emails = users.map(&:email) + attendees.map(&:email)
+
+        users.each do |user|
+          attendees += [Attendee.find_or_initialize_by(user_id: user.id)]
+        end
+
+        attendee_emails.each do |email|
+          next if emails.include?(email)
+          attendees += [Attendee.new(email: email)]
+        end
+        event.attendees = attendees.uniq
       end
     end
   end

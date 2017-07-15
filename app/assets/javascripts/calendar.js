@@ -213,7 +213,7 @@ $(document).on('ready', function() {
         return false;
       }
     },
-    eventAfterAllRender: function() {
+    eventAfterAllRender: function(view) {
       $('#mini-calendar').datepicker('refresh');
     },
     loading: function(bool) {
