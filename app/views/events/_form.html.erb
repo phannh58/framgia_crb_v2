@@ -110,12 +110,13 @@
       <div class="form-group">
         <p><%= f.label :notifications %> </p>
         <div class="notify">
-          <%= f.fields_for :notification_events do |ntbuilder| %>
+          <%= f.fields_for :notification_events, @event.notification_events.sort_by(&:notification_id) do |ntbuilder| %>
             <p>
+              <%= ntbuilder.hidden_field :id, value: nil %>
               <%= ntbuilder.hidden_field :notification_id %>
               <%= ntbuilder.label :_destroy do %>
                 <%= ntbuilder.check_box :_destroy,
-                  {checked: ntbuilder.object.persisted?}, false, true %>
+                  {checked: ntbuilder.object.persisted? || @event.new_record?}, false, true %>
                 <%= ntbuilder.object.notification_type %>
               <% end %>
             </p>

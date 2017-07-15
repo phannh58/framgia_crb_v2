@@ -16,8 +16,11 @@ class CalendarService
     end
 
     (@base_events - event_no_repeats).each do |event|
-      next if event.delete_only?
+      next if event.parent# delete_only? || event.edit_only?
       generate_repeat_from_event_parent event
+      handle_edit_all_follow_event event
+      handle_delete_event event
+      handle_edit_only_event event
     end
 
     @events
@@ -49,9 +52,6 @@ class CalendarService
     elsif event.repeat_yearly?
       repeat_yearly event
     end
-
-    handle_delete_event event
-    handle_edit_event event
   end
 
   def repeat_daily event
@@ -105,30 +105,31 @@ class CalendarService
 
     delete_only_events.each do |delete_event|
       @events.delete_if do |fevent|
-        parent = fevent.event.parent ? fevent.event.parent : fevent.event
-        fevent.event == event && fevent.start_date.to_date == delete_event.exception_time.to_date
+        fevent.event.parent_id == delete_event.parent_id && fevent.start_date.to_date == delete_event.exception_time.to_date
       end
     end
   end
 
-  def handle_edit_event event
-    edit_only_events = event.event_exceptions.edit_only
-
-    edit_only_events.each do |edit_event|
-      @events.delete_if do |fevent|
-        parent = fevent.event.parent ? fevent.event.parent : fevent.event
-        fevent.event == parent && fevent.start_date.to_date == edit_event.exception_time.to_date
-      end
-      @events << FullCalendar::Event.new(edit_event, @user)
-    end
-
+  def handle_edit_all_follow_event event
     edit_all_follow_events = event.event_exceptions.edit_all_follow
 
     edit_all_follow_events.each do |edit_event|
       @events.delete_if do |fevent|
-        parent = fevent.event.parent ? fevent.event.parent : fevent.event
-        fevent.event == event && fevent.start_date.to_date >= edit_event.exception_time.to_date
+        fevent.event.id == edit_event.parent_id && fevent.start_date.to_date >= edit_event.exception_time.to_date
       end
+
+      generate_repeat_from_event_parent edit_event
+    end
+  end
+
+  def handle_edit_only_event event
+    edit_only_events = event.event_exceptions.edit_only
+
+    edit_only_events.each do |edit_event|
+      @events.delete_if do |fevent|
+        fevent.event.parent_id == edit_event.parent_id && fevent.start_date.to_date == edit_event.exception_time.to_date
+      end
+      @events << FullCalendar::Event.new(edit_event, @user)
     end
   end
 end

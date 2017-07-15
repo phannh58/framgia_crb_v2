@@ -17,27 +17,29 @@ module Events
             if changed_repeat_type?
               @parent.event_exceptions.each{|event| event.destroy!}
               make_and_assign_attendees @parent
+              make_and_assign_notifications @parent
               @parent.update_attributes! event_params.merge({
                 exception_time: nil, exception_type: nil,
                 start_date: @parent.start_date, finish_date: @parent.finish_date,
-                start_repeat: @parent.start_repeat
+                start_repeat: @parent.start_repeat,
+                notification_events_attributes: []
               })
             else
               # TÌm thằng gốc và update thông tin cho nó
               make_and_assign_attendees @parent
+              make_and_assign_notifications @parent
               @parent.update_attributes! event_params.merge({
                 exception_time: nil, exception_type: nil,
                 start_date: @parent.start_date, finish_date: @parent.finish_date,
-                start_repeat: @parent.start_repeat, end_repeat: @parent.end_repeat
+                start_repeat: @parent.start_repeat, end_repeat: @parent.end_repeat,
+                notification_events_attributes: []
               })
 
               # TÌm tất cả những thằng có excepton không phải là delete và update thêm thông tin cho nó
               @parent.event_exceptions.not_delete_only.each do |event|
                 make_and_assign_attendees event
-                event.assign_attributes title: @parent.title,
-                  description: @parent.description
-                event.notifications = event.notifications + @parent.notifications
-                event.attendees = event.attendees + @parent.attendees
+                make_and_assign_notifications event
+                event.assign_attributes title: @parent.title, description: @parent.description
                 event.save!
               end
             end
@@ -90,6 +92,11 @@ module Events
         end
 
         event.attendees = attendees.uniq
+      end
+
+      def make_and_assign_notifications event
+        temp_event = Event.new event_params
+        event.notification_events = temp_event.notification_events
       end
     end
   end

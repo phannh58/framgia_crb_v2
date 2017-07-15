@@ -17,10 +17,11 @@ module Events
           ActiveRecord::Base.transaction do
             # Find all end after date @temp_event.start_date
             load_events_after_start_date.each{|event| event.destroy!}
-
+            # Neu tach khoi chuoi thi xem nhu taoj moi nen khong can care notifications, chon cai nao thi se luu cai do
             # Tach ra khoi chuoi neu co thay doi ve repeat hoac thay doi ve time
             if (@temp_event.end_repeat > @event.end_repeat) || changed_event_time?
               make_and_assign_attendees @temp_event
+
               # Creat new evert with new repeat
               @temp_event.assign_attributes exception_time: nil,
                 exception_type: nil,
@@ -37,7 +38,10 @@ module Events
               end
               @event.user_id = @user.id
               make_and_assign_attendees @event
-              @event.update_attributes! event_params
+              make_and_assign_notifications @event
+              @event.update_attributes! event_params.merge({
+                notification_events_attributes: []
+              })
             end
           end
         rescue ActiveRecord::RecordInvalid => exception
@@ -112,6 +116,10 @@ module Events
           attendees += [Attendee.new(email: email)]
         end
         event.attendees = attendees.uniq
+      end
+
+      def make_and_assign_notifications event
+        event.notification_events = @temp_event.notification_events
       end
     end
   end

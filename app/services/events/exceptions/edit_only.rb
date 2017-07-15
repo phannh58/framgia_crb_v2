@@ -35,17 +35,20 @@ module Events
             new_event.user_id = @user.id
 
             make_and_assign_attendees new_event
+            make_and_assign_notifications new_event
 
             if changed_event_time?
               new_event.update_attributes! event_params.merge({
                 start_repeat: nil, end_repeat: nil, repeat_type: nil,
-                repeat_every: nil, exception_time: nil, exception_type: nil
+                repeat_every: nil, exception_time: nil, exception_type: nil,
+                notification_events_attributes: []
               })
             else
               new_event.update_attributes event_params.merge({
                 parent_id: @event.parent_id || @event.id,
                 start_repeat: nil, end_repeat: nil,
-                repeat_type: nil, repeat_every: nil
+                repeat_type: nil, repeat_every: nil,
+                notification_events_attributes: []
               })
             end
           end
@@ -67,6 +70,7 @@ module Events
       end
 
       def changed_event_repeat_time?
+        return if @event.persisted? && @event.start_repeat.nil? || @event.end_repeat.nil?
         @temp_event.start_date.to_date != @temp_event.start_repeat.to_date || @temp_event.end_repeat.to_date != @event.end_repeat.to_date
       end
 
@@ -93,6 +97,10 @@ module Events
           attendees += [Attendee.new(email: email)]
         end
         event.attendees = attendees.uniq
+      end
+
+      def make_and_assign_notifications event
+        event.notification_events = @temp_event.notification_events
       end
     end
   end
