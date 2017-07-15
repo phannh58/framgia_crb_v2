@@ -1,11 +1,11 @@
-<th><%= t ".repeat_on" %></th>
+<th><%= t "events.dialog_repeat_form.repeat_on" %></th>
 <td>
-  <div>
+  <div id="days-of-week">
     <%= f.fields_for :repeat_ons, @repeat_ons do |repeat_builder| %>
       <p class="ep-rec-dow">
         <%= repeat_builder.hidden_field :days_of_week_id %>
         <%= repeat_builder.label :_destroy,
-          for: "repeat-#{repeat_builder.index}" do %>
+          for: "repeat-#{repeat_builder.index}", id: "label-#{repeat_builder.index}" do %>
           <%= repeat_builder.check_box :_destroy,
             {
               checked: repeat_builder.object.persisted?,

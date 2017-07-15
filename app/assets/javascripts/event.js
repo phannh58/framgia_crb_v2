@@ -72,15 +72,16 @@ $(document).on('ready', function() {
     }
   });
 
-  $('.dialog-repeat-event').click(function() {
-    showDialog('dialog-repeat-event-form');
-  });
-
   if ($('#event_all_day').is(':checked')) {
     start_time.hide();
     finish_time.hide();
     checkAllday($('#event_all_day'));
   }
+
+  $('.dialog-repeat-event').click(function() {
+    showDialog('dialog-repeat-event-form');
+    showSummaryByRepeatType();
+  });
 
   $('#event_all_day').on('click', function() {
     checkAllday($(this));
@@ -88,7 +89,115 @@ $(document).on('ready', function() {
 
   $('#event_repeat_type').on('change', function() {
     showRepeatOn();
+    showSummaryByRepeatType();
   });
+
+  $('#event_repeat_every').on('change', function() {
+    showSummaryByRepeatType();
+  });
+
+  $('#end-date-repeat').on('change', function() {
+    showSummaryByRepeatType();
+  });
+
+  $('#days-of-week').on('change', function() {
+    showSummaryByRepeatType();
+  });
+
+  function showSummaryByRepeatType() {
+    var summary = '';
+    var day_on_show = '';
+    var count_checked_day = 0;
+    var repeat_daily = 'daily';
+    var repeat_weekly = 'weekly';
+    var repeat_monthly = 'monthly';
+    var repeat_yearly = 'yearly';
+    var repeat_type = $('#event_repeat_type').val();
+    var repeat_every = $('#event_repeat_every').val();
+    var start_date = $('#start-date-repeat').val();
+    var end_date = $('#end-date-repeat').val();
+    var checkboxes = $('#days-of-week').find('input[type = "checkbox"]');
+    var start_repeat_format = moment(start_date, I18n.t('events.format_date_month_year'));
+    var end_repeat_format = moment(end_date, I18n.t('events.format_date_month_year'))
+                              .format(I18n.t('events.format_name_of_day'));
+
+    for (var i = 0; i < checkboxes.length; i++) {
+      if (checkboxes[i].checked == true) {
+        count_checked_day += 1;
+        day_on_show += $('#label-'+ i).text().replace(/\s+/g, '') + ', ';
+      }
+    }
+
+    switch (repeat_type) {
+      case repeat_daily:
+        if (repeat_every == 1) {
+          summary = I18n.t('events.daily_until') + end_repeat_format;
+          appendText();
+        } else {
+          summary = I18n.t('events.every') + repeat_every + I18n.t('events.days_until') +
+            end_repeat_format;
+          appendText();
+        }
+        break;
+      case repeat_weekly:
+        if (count_checked_day == 0) {
+          day_on_show = start_repeat_format.format(I18n.t('events.format_day')) + ', ';
+        }
+
+        if (repeat_every == 1) {
+          if (count_checked_day == 7) {
+            summary = I18n.t('events.weekly_on_all_days') + end_repeat_format;
+            appendText();
+          } else {
+            summary = I18n.t('events.weekly_on') + day_on_show + ' ' +
+              I18n.t('events.until') + end_repeat_format;
+            appendText();
+          }
+        } else {
+          if (count_checked_day == 7) {
+            summary = I18n.t('events.every') + repeat_every +
+              I18n.t('events.weeks_on_all_days') + ' ' + end_repeat_format;
+            appendText();
+          } else {
+            summary = I18n.t('events.every') + repeat_every + I18n.t('events.weeks_on') +
+              day_on_show + ' ' + I18n.t('events.until') + end_repeat_format;
+            appendText();
+          }
+        }
+        break;
+      case repeat_monthly:
+        if (repeat_every == 1) {
+          summary = I18n.t('events.monthly_on') +
+            start_repeat_format.format(I18n.t('events.format_day_DD')) +
+            ', ' + I18n.t('events.until') + end_repeat_format;
+          appendText();
+        } else {
+          summary = I18n.t('events.every') + repeat_every + I18n.t('events.months_on') +
+            start_repeat_format.format(I18n.t('events.format_day_DD')) + ', ' +
+            I18n.t('events.until') + end_repeat_format;
+          appendText();
+        }
+        break;
+      case repeat_yearly:
+        if (repeat_every == 1) {
+          summary = I18n.t('events.annually_on') +
+            start_repeat_format.format(I18n.t('events.format_month_day')) +
+            ', ' + I18n.t('events.until') + end_repeat_format;
+          appendText();
+        } else {
+          summary = I18n.t('events.every') + repeat_every + I18n.t('events.years_on') +
+            start_repeat_format.format(I18n.t('events.format_month_day')) +
+            ', ' + I18n.t('events.until') + end_repeat_format;
+          appendText();
+        }
+        break;
+    }
+
+    function appendText() {
+      $('#summary-result').empty();
+      $('#summary-result').append(summary);
+    }
+  }
 
   function formatAMPM(date) {
     var hours = date.getHours();
