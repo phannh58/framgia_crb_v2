@@ -102,19 +102,6 @@ class Event < ApplicationRecord
     where "calendar_id = ?", calendar_id
   end
 
-  class << self
-    def event_exception_at_time exception_type, start_time, end_time
-      find_by "exception_type IN (?) and exception_time >= ? and exception_time <= ?",
-        exception_type, start_time, end_time
-    end
-
-    def find_with_exception exception_time
-      find_by "exception_type IN (?) and exception_time = ?",
-        [Event.exception_types[:delete_only],
-        Event.exception_types[:delete_all_follow]], exception_time
-    end
-  end
-
   Event.repeat_types.keys.each do |repeat_type|
     define_method "repeat_#{repeat_type}?" do
       send "#{repeat_type}?"

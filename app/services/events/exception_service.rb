@@ -31,9 +31,7 @@ module Events
     private
 
     def perform_with_exception
-      return false if @exception_time.blank?
-      return false if Event.find_with_exception @exception_time.to_datetime.utc
-      return false if @exception_type.blank?
+      return false if @exception_time.blank? || @exception_type.blank?
       send @exception_type
     end
 
