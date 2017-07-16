@@ -203,6 +203,10 @@ UNUSED.gcal-contenteditable-textinput.textarea {
     padding-left: 0;
   }
 
+  .attendees input{
+    z-index: 1;
+  }
+
   .form-group {
     .select2 .selection .select2-selection {
       width: 100% !important;

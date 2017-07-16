@@ -54,10 +54,12 @@
 
       #source-popup {
         .btn-default {
-          background-color: $aqua-haze-color;
           height: 29px;
           padding: 3px 6px;
           width: 175px;
+          background: url("data:image/svg+xml;utf8,<svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='24' height='24' viewBox='0 0 24 24'><path fill='#444' d='M7.406 7.828l4.594 4.594 4.594-4.594 1.406 1.406-6 6-6-6z'></path></svg>");
+          background-position: 100% 50%;
+          background-repeat: no-repeat;
         }
 
         li a {
@@ -407,6 +409,7 @@
 
         select {
           -webkit-appearance: none;
+          -webkit-border-radius: 2px;
           appearance: none;
           background: $alabaster-color;
           border: 1px solid $silver-color;
@@ -417,40 +420,14 @@
           margin: 0;
           outline: none;
           padding: 4px 3px 3px 5px;
+          background: url("data:image/svg+xml;utf8,<svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='24' height='24' viewBox='0 0 24 24'><path fill='#444' d='M7.406 7.828l4.594 4.594 4.594-4.594 1.406 1.406-6 6-6-6z'></path></svg>");
+          background-position: 100% 50%;
+          background-repeat: no-repeat;
+          background-size: 21px 21px;
 
           &:first-child {
             margin-right: 1px;
           }
-        }
-
-        &::after {
-          background: transparent;
-          border-radius: 0 2px 2px 0;
-          bottom: 0;
-          color: $black;
-          content: '▼';
-          font-size: 60%;
-          line-height: 25px;
-          padding: 0 7px;
-          pointer-events: none;
-          position: absolute;
-          right: 0;
-          top: 0;
-        }
-
-        &::before {
-          background: transparent;
-          border-radius: 0 2px 2px 0;
-          bottom: 0;
-          color: $black;
-          content: '▼';
-          font-size: 60%;
-          line-height: 25px;
-          padding: 0 7px;
-          pointer-events: none;
-          position: absolute;
-          right: 72px;
-          top: 0;
         }
 
         .no-pointer-events .select-list::after {
