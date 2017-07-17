@@ -1,5 +1,6 @@
 class User < ApplicationRecord
   extend FriendlyId
+  include UserAdmin
 
   friendly_id :name, use: %i(slugged finders)
 

@@ -1,4 +1,6 @@
 class Calendar < ApplicationRecord
+  include CalendarAdmin
+
   belongs_to :color
   belongs_to :creator, class_name: User.name, foreign_key: :creator_id
   belongs_to :owner, polymorphic: true
