@@ -1,4 +1,11 @@
 Rails.application.routes.draw do
+  devise_for :admins, path: "admin", controllers: {
+      sessions: "admin/sessions",
+      passwords: "admin/passwords"
+    }
+
+  mount RailsAdmin::Engine => "/admin", as: "rails_admin"
+
   require "sidekiq/web"
   mount Sidekiq::Web => "/sidekiq"
 

@@ -1,44 +1,46 @@
-<div id="share-link">
-  <% if controller_name != 'passwords' %>
-    <% if target == :signup %>
-      <p>
-        <%= link_to "javascript:void(0)", class: "login" do %>
-          <i class="fa fa-sign-in" aria-hidden="true"></i> <%= t("devise.sessions.log_in") %>
-        <% end %>
-      </p>
-    <% end %>
-
-    <% if target == :signin %>
-      <p>
-        <%= link_to "javascript:void(0)", class: "signup" do %>
-          <i class="fa fa-user-plus" aria-hidden="true"></i> <%= t("devise.registrations.sign_up") %>
-        <% end %>
-      </p>
-    <% end %>
-
-    <%- if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations' %>
-      <p>
-        <%= link_to "Forgot your password?", new_password_path(resource_name) %>
-      </p>
-      <br />
-    <% end -%>
-
-    <% if devise_mapping.omniauthable? %>
-      <% resource_class.omniauth_providers.each do |provider| %>
+<% if resource.is_a?(User) %>
+  <div id="share-link">
+    <% if controller_name != 'passwords' %>
+      <% if target == :signup %>
         <p>
-          <%= link_to omniauth_authorize_path(resource_name, provider) do %>
-            <% if provider.to_s.include?("facebook") %>
-              <i class="fa fa-facebook-official" aria-hidden="true"></i>
-            <% elsif provider.to_s.include?("google") %>
-              <i class="fa fa-google" aria-hidden="true"></i>
-            <% else %>
-              <i class="fa fa-user" aria-hidden="true"></i>
-            <% end %>
-            <%= t("devise.omniauthable.sign_in_with",
-              provider: OmniAuth::Utils.camelize(provider)) %>
+          <%= link_to "javascript:void(0)", class: "login" do %>
+            <i class="fa fa-sign-in" aria-hidden="true"></i> <%= t("devise.sessions.log_in") %>
           <% end %>
         </p>
       <% end %>
+
+      <% if target == :signin %>
+        <p>
+          <%= link_to "javascript:void(0)", class: "signup" do %>
+            <i class="fa fa-user-plus" aria-hidden="true"></i> <%= t("devise.registrations.sign_up") %>
+          <% end %>
+        </p>
+      <% end %>
+
+      <%- if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations' %>
+        <p>
+          <%= link_to "Forgot your password?", new_password_path(resource_name) %>
+        </p>
+        <br />
+      <% end -%>
+
+      <% if devise_mapping.omniauthable? %>
+        <% resource_class.omniauth_providers.each do |provider| %>
+          <p>
+            <%= link_to omniauth_authorize_path(resource_name, provider) do %>
+              <% if provider.to_s.include?("facebook") %>
+                <i class="fa fa-facebook-official" aria-hidden="true"></i>
+              <% elsif provider.to_s.include?("google") %>
+                <i class="fa fa-google" aria-hidden="true"></i>
+              <% else %>
+                <i class="fa fa-user" aria-hidden="true"></i>
+              <% end %>
+              <%= t("devise.omniauthable.sign_in_with",
+                provider: OmniAuth::Utils.camelize(provider)) %>
+            <% end %>
+          </p>
+        <% end %>
+      <% end %>
     <% end %>
-  <% end %>
-</div>
+  </div>
+<% end %>
