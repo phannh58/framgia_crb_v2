@@ -44,17 +44,18 @@ class RoomSearchService
 
   def load_calendars
     calendars = @calendars.select{|calendar| calendar.id.in?(@calendar_ids)}
-
     return calendars if @number_of_seats == Settings.number_of_seats.zero
 
-    calendars.select do |calendar|
-      calendar.number_of_seats.nil? || calendar.number_of_seats >= @number_of_seats
-    end.compact!
+    calendars = calendars.select do |calendar|
+      calendar.number_of_seats.nil? || (calendar.number_of_seats && calendar.number_of_seats >= @number_of_seats)
+    end.compact
+
+    calendars
   end
 
   def load_all_events_from_calendars calendar_ids
-    events = Event.in_calendars calendar_ids, NullUser.new
-    calendar_service = CalendarService.new events
+    events = Event.in_calendars calendar_ids, @start_time, @finish_time
+    calendar_service = CalendarService.new events, @start_time, @finish_time
     calendar_service.repeat_data
   end
 
@@ -120,11 +121,11 @@ class RoomSearchService
 
   def assign_data
     if @params[:event_start_date].present?
-      @start_time = @params[:event_start_date].to_datetime.utc
+      @start_time = @params[:event_start_date]
     end
 
     if @params[:event_finish_date].present?
-      @finish_time = @params[:event_finish_date].to_datetime.utc
+      @finish_time = @params[:event_finish_date]
     end
 
     @calendar_ids = selected_calendars

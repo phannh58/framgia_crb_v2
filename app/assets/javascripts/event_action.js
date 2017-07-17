@@ -164,7 +164,7 @@ $(document).on('click', '.btn-confirm', function() {
     deleteServerEvent(event, rel);
     hiddenDialog('dialog-delete-popup');
   } else if (rel.indexOf(I18n.t('events.repeat_dialog.edit.edit')) !== -1) {
-    updateServerEvent(event, event.allDay, rel, 1);
+    updateServerEvent(event, event.allDay, rel);
     hiddenDialog('dialog-update-popup');
   }
   $('.overlay-bg').hide();
@@ -305,7 +305,7 @@ function addEventToCalendar(data) {
   $calendar.fullCalendar('unselect');
 }
 
-function updateServerEvent(event, allDay, exception_type, is_drop) {
+function updateServerEvent(event, allDay, exception_type) {
   var start_date, finish_date, start_date_with_timezone;
 
   if(event.title.length === 0)
@@ -338,7 +338,6 @@ function updateServerEvent(event, allDay, exception_type, is_drop) {
       exception_type: exception_type,
       end_repeat: event.end_repeat,
     },
-    is_drop: is_drop,
     persisted: event.persisted ? 1 : 0,
     start_time_before_change: event.start_time_before_change,
     finish_time_before_change: event.finish_time_before_change

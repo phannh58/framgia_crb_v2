@@ -11,13 +11,9 @@ module Responsable
 
     def response_create_fail service
       respond_to do |format|
-        if (@is_overlap = service.is_overlap)
-          format.html{redirect_back fallback_location: root_path, flash: {error: t("events.flashs.overlap")}}
-        else
-          format.html{render :new}
-        end
+        format.html{render :new}
         format.json do
-          render json: {is_overlap: @is_overlap, is_errors: service.event.errors.any?}
+          render json: {is_errors: service.event.errors.any?}
         end
       end
     end
@@ -33,16 +29,8 @@ module Responsable
 
     def response_update_fail service
       respond_to do |format|
-        if (@is_overlap = service.is_overlap)
-          format.html do
-            flash.now[:danger] = t("events.flashs.overlap")
-            render :edit
-          end
-          format.json{render json: {is_overlap: @is_overlap}, status: 422}
-        else
-          format.html{redirect_to :back, flash: {danger: t("events.flashs.not_updated")}}
-          format.json{render json: {error: "Error"}, status: 422}
-        end
+        format.html{redirect_to :back, flash: {danger: t("events.flashs.not_updated")}}
+        format.json{render json: {error: "Error"}, status: 422}
       end
     end
 

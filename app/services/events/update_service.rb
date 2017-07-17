@@ -1,6 +1,6 @@
 module Events
   class UpdateService
-    attr_accessor :is_overlap, :event
+    attr_accessor :event
 
     REPEAT_PARAMS = %i(repeat_type repeat_every start_repeat end_repeat
                        repeat_ons_attributes).freeze
@@ -19,8 +19,8 @@ module Events
       if @event.exist_repeat? && (@event.parent_id.nil? || (@event.parent_id && @event.edit_all_follow?))
         @params[:event] = @params[:event].merge(nhash)
       end
-
-      return false if changed_time? && (@is_overlap = is_overlap?) && !@event.calendar.is_allow_overlap?
+      return false if changed_date_with_repeat?
+      return false if changed_time_and_overlap?
 
       exception_service = Events::ExceptionService.new(@user, @event, @params)
 
@@ -55,14 +55,12 @@ module Events
       @params[:event][:end_repeat] || @event.end_repeat
     end
 
-    def changed_time?
+    def changed_time_and_overlap?
       return false if @event_handler.start_date.nil?
 
       if (@event.exist_repeat? && @event.edit_only?) || !@event.exist_repeat?
-        return @event.start_date != @event_handler.start_date
+        return @event.start_date != @event_handler.start_date && is_overlap? && !@event.calendar.is_allow_overlap?
       end
-
-      return false
     end
 
     def nhash
@@ -71,6 +69,11 @@ module Events
         start_repeat: start_repeat,
         end_repeat: end_repeat
       }
+    end
+
+    def changed_date_with_repeat?
+      temp_event = Event.new start_date: @params[:start_time_before_change], finish_date: @params[:finish_time_before_change]
+      temp_event.start_date.to_date != @event.start_date.to_date || temp_event.finish_date.to_date != @event.finish_date.to_date
     end
   end
 end

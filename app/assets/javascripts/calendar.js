@@ -83,8 +83,8 @@ $(document).on('ready', function() {
         data: {
           calendar_ids: calendar_ids,
           organization_id: org_id,
-          start_time_view: moment.tz(moment().startOf('month').format(), timezone).format(),
-          end_time_view: moment.tz(moment().endOf('month').format(), timezone).format()
+          start_time_view: moment.tz(moment(start).startOf('month').format(), timezone).format(),
+          end_time_view: moment.tz(moment(end).endOf('month').format(), timezone).format()
         },
         dataType: 'json',
         success: function(response) {

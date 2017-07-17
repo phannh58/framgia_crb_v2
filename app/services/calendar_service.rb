@@ -4,6 +4,8 @@ class CalendarService
   def initialize *args
     @events = []
     @base_events, @start_time_view, @end_time_view, @user = args
+    @start_time_view = DateTime.parse(@start_time_view)
+    @end_time_view = DateTime.parse(@end_time_view)
   end
 
   def repeat_data
@@ -16,25 +18,11 @@ class CalendarService
     end
 
     (@base_events - event_no_repeats).each do |event|
-      next if event.parent# delete_only? || event.edit_only?
+      next if event.parent
       generate_repeat_from_event_parent event
       handle_edit_all_follow_event event
       handle_delete_event event
       handle_edit_only_event event
-    end
-
-    @events
-  end
-
-  def generate_event
-    event = @base_events.first
-
-    return [] if event.delete_only?
-
-    if event.is_repeat? && !event.edit_only?
-      generate_repeat_from_event_parent event
-    else
-      @events << FullCalendar::Event.new(event, @user)
     end
 
     @events
@@ -59,44 +47,57 @@ class CalendarService
          .step(event.end_repeat.to_date, event.repeat_every).to_a
 
     repeat_dates.each do |repeat_date|
-      event_temp = FullCalendar::Event.new event, @user
-      event_temp.update_info(repeat_date)
-      @events << event_temp
+      make_and_assign_event event, repeat_date
     end
   end
 
   def repeat_weekly event
-    days_to_show = event.days_of_weeks.map(&:name)
+    days_to_show = event.days_of_weeks.map(&:name).uniq
     return if days_to_show.empty?
-    repeat_dates = event.start_repeat.to_date
-         .step(event.end_repeat.to_date, event.repeat_every)
-         .select{|date| days_to_show.include?(date.strftime("%A"))}
+
+    repeat_dates = start_week_number(event).step(finish_week_number(event), event.repeat_every).map do |week_number|
+      days_in_week = Settings.event.repeat_data
+      days_to_show.map{|day| Date.commercial(@start_time_view.year, week_number, days_in_week.index(day) + 1)}
+    end.flatten
+
     repeat_dates.each do |repeat_date|
-      event_temp = FullCalendar::Event.new event, @user
-      event_temp.update_info(repeat_date)
-      @events << event_temp
+      make_and_assign_event event, repeat_date
     end
   end
 
   def repeat_monthly event
-    repeat_dates = event.start_repeat.to_date
-         .step(event.end_repeat.to_date, event.repeat_every)
-         .select{|date| date.day == event.start_date.day}
+    start_repeat = event.start_repeat
+    end_repeat = event.end_repeat
+    number_months = (end_repeat.year * 12 + end_repeat.month) - (start_repeat.year * 12 + start_repeat.month) + 1
+
+    repeat_dates = []
+    number_months.times.each do |index|
+      next if (index % event.repeat_every != 0)
+      repeat_date = event.start_date + index.months
+
+      next if (repeat_date < @start_time_view || repeat_date > @end_time_view || repeat_date > event.end_repeat)
+      repeat_dates << repeat_date
+    end
+
     repeat_dates.each do |repeat_date|
-      event_temp = FullCalendar::Event.new event, @user
-      event_temp.update_info(repeat_date)
-      @events << event_temp
+      make_and_assign_event event, repeat_date
     end
   end
 
-  def repeat_yearly event, start, function = nil
-    repeat_dates = event.start_repeat.to_date
-         .step(event.end_repeat.to_date, event.repeat_every)
-         .select{|date| date.day == event.start_date.day && date.month == event.start_date.month}
+  def repeat_yearly event
+    number_years = event.end_repeat.year - event.start_repeat.year + 1
+
+    repeat_dates = []
+    number_years.times.each do |index|
+      next if (index % event.repeat_every != 0)
+      repeat_date = event.start_date + index.years
+
+      next if (repeat_date < @start_time_view || repeat_date > @end_time_view || repeat_date > event.end_repeat)
+      repeat_dates << repeat_date
+    end
+
     repeat_dates.each do |repeat_date|
-      event_temp = FullCalendar::Event.new event, @user
-      event_temp.update_info(repeat_date)
-      @events << event_temp
+      make_and_assign_event event, repeat_date
     end
   end
 
@@ -131,5 +132,29 @@ class CalendarService
       end
       @events << FullCalendar::Event.new(edit_event, @user)
     end
+  end
+
+  private
+
+  def start_week_number event
+    if @start_time_view > event.start_repeat
+      @start_time_view.strftime("%U").to_i
+    else
+      event.start_repeat.strftime("%U").to_i
+    end
+  end
+
+  def finish_week_number event
+    if @end_time_view < event.end_repeat
+      @end_time_view.strftime("%U").to_i
+    else
+      event.end_repeat.strftime("%U").to_i
+    end
+  end
+
+  def make_and_assign_event event, date
+    event_temp = FullCalendar::Event.new event, @user
+    event_temp.update_info(date)
+    @events << event_temp
   end
 end
