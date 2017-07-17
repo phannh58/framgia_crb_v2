@@ -34,8 +34,10 @@ module Events
             new_event = edited_self? ? @event : @event.dup
             new_event.user_id = @user.id
 
-            make_and_assign_attendees new_event
-            make_and_assign_notifications new_event
+            if @params[:specific_form] == 1
+              make_and_assign_attendees new_event
+              make_and_assign_notifications new_event
+            end
 
             if changed_event_time?
               new_event.update_attributes! event_params.merge({

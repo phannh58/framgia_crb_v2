@@ -9,7 +9,7 @@ event:
   format_time: "%H:%M"
   format_datetime: "%Y-%m-%d %H:%M"
   format_date_basic: "%Y%m%d"
-  repeat_data: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thusday", "Friday", "Sartuday"]
+  repeat_data: ["Monday", "Tuesday", "Wednesday", "Thusday", "Friday", "Sartuday", "Sunday"]
   edit_all: "edit_all"
   edit_all_follow: "edit_all_follow"
 notification:

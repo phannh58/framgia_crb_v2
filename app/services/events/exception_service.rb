@@ -18,7 +18,7 @@ module Events
 
       begin
         ActiveRecord::Base.transaction do
-          make_and_assign_attendees
+          make_and_assign_attendees if @params[:specific_form] == 1
           @event.assign_attributes event_params
           @event.save!
           make_activity @event.owner, @event, :update

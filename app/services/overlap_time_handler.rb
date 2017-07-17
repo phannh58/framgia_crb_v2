@@ -4,19 +4,14 @@ class OverlapTimeHandler
 
   def initialize event = Event.new
     @event = event
+    @start_time_view = (@event.start_repeat || @event.start_date).to_s
+    @end_time_view = (@event.end_repeat || @event.finish_date).to_s
     @db_events = generate_db_events @event.calendar_id
     @temp_events = generate_temp_events(@event) if @db_events.any?
-
-    # @repeat_events = []
-
-    # if (parent = @event.parent) && parent.is_repeat?
-    #   @repeat_events = generate_temp_events parent
-    # end
   end
 
   def valid?
     return false if @db_events.blank? || @temp_events.blank?
-    # return true if check_overlap_event @repeat_events, @temp_events
     return true if check_overlap_event @db_events, @temp_events
     false
   end
@@ -40,15 +35,15 @@ class OverlapTimeHandler
 
     return [] if events.blank?
 
-    calendar_service = CalendarService.new(events, @start_time, @end_time)
+    calendar_service = CalendarService.new(events, @start_time_view, @end_time_view)
     calendar_service.repeat_data.select do |event|
       event.exception_type.nil? || (!event.delete_only? && !event.delete_all_follow?)
     end.sort_by(&:start_date)
   end
 
   def generate_temp_events event
-    calendar_service = CalendarService.new([event], @start_time, @end_time)
-    calendar_service.generate_event
+    calendar_service = CalendarService.new([event], @start_time_view, @end_time_view)
+    calendar_service.repeat_data
   end
 
   def compare_time? db_event, temp_event

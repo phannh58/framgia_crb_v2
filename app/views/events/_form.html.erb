@@ -29,6 +29,7 @@
           autofocus: true, required: true, class: "form-control" %>
       </div>
       <div class="form-group datetime" id="dateTime">
+        <%= hidden_field_tag :specific_form, value: 1 %>
         <%= hidden_field_tag :start_time_before_change, value: @event.start_date %>
         <%= hidden_field_tag :finish_time_before_change, value: @event.finish_date %>
 

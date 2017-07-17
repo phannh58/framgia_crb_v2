@@ -53,11 +53,10 @@ class Event < ApplicationRecord
 
   accepts_nested_attributes_for :event_attendees, allow_destroy: true
   accepts_nested_attributes_for :notification_events, allow_destroy: true
-  accepts_nested_attributes_for :repeat_ons, allow_destroy: true,
-    reject_if: proc {self.repeat_type.nil?}
+  accepts_nested_attributes_for :repeat_ons, allow_destroy: true
 
-  scope :in_calendars, ->(calendar_ids) do
-    where("events.calendar_id IN (?)", calendar_ids)
+  scope :in_calendars, ->(calendar_ids, start_time, end_time) do
+    where("calendar_id IN (:ids) AND (start_date >= :start_time OR finish_date < :end_time OR start_repeat >= :start_time OR end_repeat <= :end_time)", ids: calendar_ids, start_time: start_time, end_time: end_time)
   end
   scope :shared_with_user, ->(user) do
     if user.persisted?

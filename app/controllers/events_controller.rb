@@ -14,7 +14,8 @@ class EventsController < ApplicationController
   serialization_scope :current_user
 
   def index
-    @events = Event.in_calendars params[:calendar_ids]
+    @events = Event.in_calendars params[:calendar_ids],
+      params[:start_time_view], params[:end_time_view]
 
     if user_signed_in? && params[:organization_id].blank?
       @events += Event.shared_with_user current_user

@@ -20,8 +20,9 @@ module Events
             # Neu tach khoi chuoi thi xem nhu taoj moi nen khong can care notifications, chon cai nao thi se luu cai do
             # Tach ra khoi chuoi neu co thay doi ve repeat hoac thay doi ve time
             if (@temp_event.end_repeat > @event.end_repeat) || changed_event_time?
-              make_and_assign_attendees @temp_event
-
+              if @params[:specific_form] == 1
+                make_and_assign_attendees @temp_event
+              end
               # Creat new evert with new repeat
               @temp_event.assign_attributes exception_time: nil,
                 exception_type: nil,
@@ -32,13 +33,16 @@ module Events
                 user_id: @user.id
               @temp_event.save!
             else
-              unless @event.edit_all_follow?
+              if !@event.edit_all_follow? && is_allow_duplicate_event?
                 # update_event_exception_pre_nearest
-                @event = duplicate_event if is_allow_duplicate_event?
+                @event = duplicate_event
               end
               @event.user_id = @user.id
-              make_and_assign_attendees @event
-              make_and_assign_notifications @event
+
+              if @params[:specific_form] == 1
+                make_and_assign_attendees @event
+                make_and_assign_notifications @event
+              end
               @event.update_attributes! event_params.merge({
                 notification_events_attributes: []
               })
