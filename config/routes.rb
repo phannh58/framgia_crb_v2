@@ -4,10 +4,12 @@ Rails.application.routes.draw do
       passwords: "admin/passwords"
     }
 
-  mount RailsAdmin::Engine => "/admin", as: "rails_admin"
+  authenticate :admin do
+    require "sidekiq/web"
+    mount Sidekiq::Web => "/sidekiq"
+  end
 
-  require "sidekiq/web"
-  mount Sidekiq::Web => "/sidekiq"
+  mount RailsAdmin::Engine => "/admin", as: "rails_admin"
 
   # Serve websocket cable requests in-process
   mount ActionCable.server => "/cable"
@@ -42,7 +44,6 @@ Rails.application.routes.draw do
     end
   end
   resources :events
-  resources :share_calendars, only: %(new)
   resource :multi_events, only: %(create)
   resources :attendees, only: %i(create destroy)
   resources :particular_calendars, only: %i(show update)
