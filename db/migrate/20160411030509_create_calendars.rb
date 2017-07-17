@@ -10,7 +10,6 @@ class CreateCalendars < ActiveRecord::Migration[5.0]
       t.string :google_calendar_id
       t.string :description
       t.integer :number_of_seats
-      t.integer :parent_id
       t.references :color, default: 10
       t.integer :status, default: 0
       t.boolean :is_default, default: false

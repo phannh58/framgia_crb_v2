@@ -9,6 +9,9 @@ namespace :db do
         Rake::Task[task].invoke
       end
 
+      Admin.create email: "admin@crb.framgia.vn", password: 12345678, password_confirmation: 12345678
+
+      Fabrication.clear_definitions
       puts "Create permission"
       Fabricate :permission, title: I18n.t("permissions.permission_1"), permission_type: 0
       Fabricate :permission, title: I18n.t("permissions.permission_2"), permission_type: 1
@@ -26,14 +29,29 @@ namespace :db do
           email: "nguyen.binh.dieu@framgia.com"
         },
         {
-          name: "quangnv",
-          display_name: "Nguyen Van Quang",
-          email: "nguyen.van.quang@framgia.com"
+          name: "tuanca",
+          display_name: "Chu Anh Tuan",
+          email: "chu.anh.tuan@framgia.com"
         },
         {
           name: "trunghn",
           display_name: "Hoang Nhac Trung",
           email: "hoang.nhac.trung@framgia.com"
+        },
+        {
+          name: "phuongdt",
+          display_name: "Doan Thuy Phuong",
+          email: "doan.thuy.phuong@framgia.com"
+        },
+        {
+          name: "phuongntd",
+          display_name: "Nguyen Thi Duy Phuong",
+          email: "nguyen.thi.duy.phuong@framgia.com"
+        },
+        {
+          name: "viemt",
+          display_name: "Mai Tuan Viet",
+          email: "mai.tuan.viet@framgia.com"
         }
       ]
 
@@ -55,9 +73,10 @@ namespace :db do
           timezone_name: ActiveSupport::TimeZone.all.sample.name
       end
 
+      tz = ActiveSupport::TimeZone.all.detect{|tz| /Hanoi/.match(tz.name)}
+
       org = Fabricate :organization, name: "Framgia", creator_id: User.first.id
-      org.create_setting country: "VN",
-        timezone_name: ActiveSupport::TimeZone.all.sample.name
+      org.create_setting country: "VN", timezone_name: tz.name
 
       [
         {
@@ -66,7 +85,7 @@ namespace :db do
         },
         {
           workspace_name: "Toong Office",
-          rooms: ["Toong 01", "Toong 02"]
+          rooms: ["Toong 01"]
         },
         {
           workspace_name: "TKC Office",

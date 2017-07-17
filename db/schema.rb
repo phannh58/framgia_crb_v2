@@ -68,7 +68,6 @@ ActiveRecord::Schema.define(version: 20170717020837) do
     t.string   "google_calendar_id"
     t.string   "description"
     t.integer  "number_of_seats"
-    t.integer  "parent_id"
     t.integer  "color_id",                        default: 10
     t.integer  "status",                          default: 0
     t.boolean  "is_default",                      default: false

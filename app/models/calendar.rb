@@ -18,7 +18,7 @@ class Calendar < ApplicationRecord
   before_create :make_user_calendar
   after_initialize :make_address_uniq, if: "address.nil?"
 
-  enum status: %i(no_public share_public public_hide_detail)
+  enum status: %i(no_public share_public)
 
   delegate :name, to: :owner, prefix: true, allow_nil: true
 
