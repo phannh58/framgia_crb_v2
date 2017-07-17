@@ -119,7 +119,7 @@ class User < ApplicationRecord
   private
 
   def build_calendar
-    calendars.new name: name, is_default: true,
-      creator: self, color: Color.all.sample, address: email
+    owner_calendars.new name: name, is_default: true, owner_type: User.name,
+      owner_id: self.id, creator: self, color: Color.all.sample, address: email
   end
 end

@@ -2,8 +2,6 @@
   <%= render partial: "shared/control_action", locals: {f: f, partials: []} %>
 
   <%= render "shared/errors_messages", object: @calendar %>
-  <%= f.hidden_field :parent_id,
-    value: @calendar.parent_id.nil? ? params[:parent_id] : @calendar.parent_id %>
   <div class="row form-group">
     <div class="col-md-6">
       <% if is_new_action? %>
