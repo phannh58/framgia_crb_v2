@@ -1,0 +1,15 @@
+  <div class="form-group">
+    <div class="row">
+      <div class="col-md-6">
+        <label class="checkbox">
+          <input type="checkbox" name="group_attendee[ids][]" id="group_attendee_ids" value="<%= group_attendee.id %>">
+          &nbsp;&nbsp;&nbsp;<i class="fa fa-group" ></i><%= group_attendee.name %>
+          <a href="#" class="show_list_attendee_in_group"
+            data-toggle="popover" data-html="true"
+            data-content="<%= raw load_attendee(group_attendee) %>"
+            title="<%= t ".title" %>">&nbsp;&nbsp;&nbsp;
+          <span class="fa fa-info-circle text-success"></span></a>
+        </label>
+      </div>
+    </div>
+  </div>

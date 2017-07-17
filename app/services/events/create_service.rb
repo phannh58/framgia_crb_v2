@@ -15,6 +15,9 @@ module Events
         ActiveRecord::Base.transaction do
           make_and_assign_attendees
           @event.save!
+          if @params[:group_attendee_name].present?
+            make_group_attendee
+          end
           make_activity @event.owner, @event, :create
         end
       rescue ActiveRecord::RecordInvalid => exception
@@ -29,6 +32,12 @@ module Events
         @event[attribute.to_sym] = nil
       end
       @event.repeat_ons_attributes = []
+    end
+
+    def make_group_attendee
+      group_attendee = GroupAttendee.new name: @params[:group_attendee_name], user_id: @event.owner.id
+      group_attendee.attendees = Attendee.where(email: @params[:attendee][:emails])
+      group_attendee.save!
     end
 
     def is_overlap?

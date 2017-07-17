@@ -48,6 +48,15 @@ ActiveRecord::Schema.define(version: 20170717151711) do
     t.index ["reset_password_token"], name: "index_admins_on_reset_password_token", unique: true, using: :btree
   end
 
+  create_table "attendee_group_details", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "attendee_id"
+    t.integer  "group_attendee_id"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+    t.index ["attendee_id"], name: "index_attendee_group_details_on_attendee_id", using: :btree
+    t.index ["group_attendee_id"], name: "index_attendee_group_details_on_group_attendee_id", using: :btree
+  end
+
   create_table "attendees", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "email"
     t.integer  "user_id"
@@ -168,6 +177,13 @@ ActiveRecord::Schema.define(version: 20170717151711) do
     t.index ["slug", "sluggable_type"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type", length: { slug: 140 }, using: :btree
     t.index ["sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_id", using: :btree
     t.index ["sluggable_type"], name: "index_friendly_id_slugs_on_sluggable_type", using: :btree
+  end
+
+  create_table "group_attendees", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "name"
+    t.integer  "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "notification_events", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -311,6 +327,8 @@ ActiveRecord::Schema.define(version: 20170717151711) do
     t.index ["organization_id"], name: "index_workspaces_on_organization_id", using: :btree
   end
 
+  add_foreign_key "attendee_group_details", "attendees"
+  add_foreign_key "attendee_group_details", "group_attendees"
   add_foreign_key "notification_events", "events"
   add_foreign_key "notification_events", "notifications"
   add_foreign_key "user_teams", "teams"

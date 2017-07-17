@@ -18,6 +18,7 @@ class User < ApplicationRecord
   has_many :calendars, through: :user_calendars
   has_many :events
   has_many :attendees, dependent: :destroy
+  has_many :group_attendees, dependent: :destroy
   has_many :user_teams, dependent: :destroy
   has_many :teams, through: :user_teams
   has_one :setting, as: :owner, dependent: :destroy
@@ -71,6 +72,10 @@ class User < ApplicationRecord
 
   def default_calendar
     calendars.find_by is_default: true
+  end
+
+  def list_group_attendee
+    self.group_attendees.includes(:attendees)
   end
 
   def is_user? user

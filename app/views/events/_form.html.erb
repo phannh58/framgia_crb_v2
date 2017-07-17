@@ -93,12 +93,39 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <div class="form-group">
+        <div class="row">
+          <div class="col-xs-12">
+            <% current_user.list_group_attendee.each do |group_attendee| %>
+              <%= render "group_attendee", group_attendee: group_attendee %>
+            <% end %>
+          </div>
+        </div>
 
         <div class="row">
           <div class="col-md-9 col-xs-12" id="list-attendee">
             <% @event.attendees.each do |attendee| %>
               <%= render "attendee", email: attendee.email %>
             <% end %>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-9 col-xs-12">
+            <%= label_tag :group_attendee_name do %>
+              <%= check_box_tag :group_attendee_name, nil, false, disabled: true %> <%= t ".add_group_attendee" %>
+            <% end %>
+          </div>
+        </div>
+        <div class="row hidden name-group-attendee">
+          <div class="col-md-6 col-xs-12">
+            <label for="group_attendee_name"><%= t ".group_attendee_name" %></label>
+            <input type="text" class="form-control group-attendee-name" name="group_attendee_name"
+              placeholder="<%= t ".name_group_attendee" %>">
           </div>
         </div>
       </div>

@@ -4,6 +4,7 @@ $(document).on('ready', function() {
 
     if (validateEmail(email) && !existEmail(email)){
       $('#list-attendee').append(attendeeTemplate(email));
+      $('#group_attendee_name').removeAttr('disabled');
       $('.attendee-email').val('');
     } else {
       content = "Email is not valid or added to list"
@@ -44,14 +45,46 @@ $(document).on('ready', function() {
     return $('<li data-attendee-email="' + item.email + '">').append('<div class="ui-item"><i class="fa fa-user" aria-hidden="true"></i> <a data-user-id=' + item.user_id + '>' + item.email + '</a></div>').appendTo(ul);
   };
 
+  $('input[type="checkbox"]#group_attendee_ids').change(function() {
+    var emails = $(this).siblings().last().data('content');
+    var array_email = $(emails).text().slice(0,-1).split(' ');
+    if (this.checked) {
+      for(i = 0; i < array_email.length; i++) {
+        var attendee = attendeeTemplate(array_email[i]);
+        if (!existEmail(array_email[i])) {
+          $('#list-attendee').append(attendee);
+          $('#group_attendee_name').removeAttr('disabled');
+        }
+      }
+    } else {
+      for(i = 0; i < array_email.length; i++) {
+        var attendee = array_email[i];
+        $("input[value='" + attendee + "']").parent().remove();
+      }
+      removeGroupAttendeeName();
+    }
+  });
+
   $(document).on('click', '.ui-menu-item', function(){
     var attendee = attendeeTemplate($(this).data('attendee-email'));
     $('#list-attendee').append(attendee);
+    $('#group_attendee_name').removeAttr('disabled');
   });
 
   $('#list-attendee').on('click', '.remove-attendee', function(){
     $(this).parents('.attendee').remove();
+    removeGroupAttendeeName();
   });
+
+  function removeGroupAttendeeName() {
+    if ($('#list-attendee').children().length == 0) {
+      $('input[type="text"].group-attendee-name').val('');
+      $('#group_attendee_name').attr('disabled','disabled')
+                               .prop('checked', false);
+      $('.name-group-attendee').addClass('hidden');
+      $('input[type=checkbox]#group_attendee_ids').removeAttr('checked');
+    }
+  }
 
   function validateEmail(email) {
     var re = /^(([^<>()\[\]\\.,;:\s@']+(\.[^<>()\[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

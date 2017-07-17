@@ -67,4 +67,16 @@ module ApplicationHelper
       cookie.split("\;").last
     end
   end
+
+  def load_attendee group
+    (attendees = group.attendees
+      content_tag(:ul) do
+        attendees.each do |attendee|
+          concat(content_tag(:li) do
+            attendee.email + " "
+          end)
+        end
+      end)
+    .html_safe
+  end
 end

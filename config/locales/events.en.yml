@@ -2,6 +2,8 @@ en:
   dictionary:
     repeat_setting: &repeat_setting Repeat Setting
   events:
+    group_attendee:
+      title: "List Attendees"
     open_on_google_calendar: "Open on google calendar"
     new:
       url: "/events/new?"
@@ -13,6 +15,9 @@ en:
       repeat_setting: *repeat_setting
       description: "Description"
       add_attendee: "Add"
+      name_group_attendee: "Enter Group Attendee Name"
+      add_group_attendee: "Group Attendee"
+      group_attendee_name: "Group Attendee Name"
     dialog_repeat_form:
       repeat_setting: *repeat_setting
       repeats: "Repeats"

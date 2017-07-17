@@ -33,6 +33,8 @@
 //= require_self
 //= require scheduler
 //= require bootstrap/tab
+//= require bootstrap/tooltip
+//= require bootstrap/popover
 //= require bootstrap/modal
 //= require organization
 //= require invite_user

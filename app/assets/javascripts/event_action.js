@@ -97,6 +97,12 @@ $(document).on('click', '.title-popup', function() {
 });
 
 $(document).click(function(event) {
+  $('[data-toggle=popover]').each(function () {
+    if (!$(this).is(event.target) && $(this).has(event.target).length === 0 && $('.popover').has(event.target).length === 0) {
+      $(this).popover('hide');
+    }
+  });
+
   if ($('.fc-view-container').length === 0)
     return;
 

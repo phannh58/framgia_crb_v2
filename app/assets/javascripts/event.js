@@ -252,6 +252,16 @@ $(document).on('ready', function() {
     $('.dialog-repeat-event').hide();
   }
 
+  $('[data-toggle="popover"]').popover();
+
+  $('input[type="checkbox"]#group_attendee_name').change(function() {
+    if (this.checked) {
+      $('.name-group-attendee').removeClass('hidden');
+    } else {
+      $('.name-group-attendee').addClass('hidden');
+    }
+  });
+
   $('input[type="checkbox"]#repeat').change(function() {
     if (this.checked && $('.cb-repeat').hasClass('first')) {
       enable_repeat_params();
