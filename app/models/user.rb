@@ -8,7 +8,7 @@ class User < ApplicationRecord
 
   mount_uploader :avatar, ImageUploader
 
-  has_many :calendars, as: :owner, dependent: :destroy
+  has_many :owner_calendars, as: :owner, class_name: Calendar.name, dependent: :destroy
   has_many :user_organizations, dependent: :destroy
   has_many :organizations, through: :user_organizations
   has_many :user_calendars, dependent: :destroy
