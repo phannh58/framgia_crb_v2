@@ -12,10 +12,9 @@ class User < ApplicationRecord
   has_many :user_organizations, dependent: :destroy
   has_many :organizations, through: :user_organizations
   has_many :user_calendars, dependent: :destroy
-  has_many :shared_calendars, through: :user_calendars, source: :calendar
+  has_many :calendars, through: :user_calendars
   has_many :events
   has_many :attendees, dependent: :destroy
-  has_many :invited_events, through: :attendees, source: :event
   has_many :user_teams, dependent: :destroy
   has_many :teams, through: :user_teams
   has_one :setting, as: :owner, dependent: :destroy

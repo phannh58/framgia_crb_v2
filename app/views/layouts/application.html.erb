@@ -36,7 +36,6 @@
 
       <section class="<%= controller_class %>">
         <%= yield %>
-        <%= render "shared/devise_modal" unless user_signed_in? %>
       </section>
     </div>
     <div class="overlay-bg"></div>
