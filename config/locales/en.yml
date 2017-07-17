@@ -51,3 +51,5 @@ en:
   events:
     flashs:
       not_updated_because_overlap: "overlap"
+    warning:
+      end_date_greater_than_start_date: "End date must greater than start date"
