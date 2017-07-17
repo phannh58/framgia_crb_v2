@@ -8,7 +8,7 @@ class Calendar < ApplicationRecord
 
   ATTRIBUTES_PARAMS = [
     :name, :number_of_seats, :google_calendar_id, :description, :color_id,
-    :parent_id, :status, :is_allow_overlap, :is_auto_push_to_google_calendar,
+    :status, :is_allow_overlap, :is_auto_push_to_google_calendar,
     user_calendars_attributes: %I[id user_id permission_id color_id _destroy]
   ].freeze
 
@@ -74,10 +74,6 @@ class Calendar < ApplicationRecord
   def get_color user_id
     user_calendar = user_calendars.find_by user_id: user_id
     user_calendar.present? ? user_calendar.color_id : color_id
-  end
-
-  def parent?
-    parent_id.nil?
   end
 
   def bulding_name
