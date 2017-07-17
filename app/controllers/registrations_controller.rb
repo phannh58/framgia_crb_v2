@@ -20,6 +20,15 @@ class RegistrationsController < Devise::RegistrationsController
 
   protected
 
+  def update_resource resource, params
+    if resource.changed_password?
+      resource.update_with_password params
+    elsif resource.update_attributes params
+      resource.update_attributes changed_password: true
+      bypass_sign_in resource
+    end
+  end
+
   def after_update_path_for resource
     user_path resource
   end
