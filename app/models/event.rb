@@ -131,10 +131,11 @@ class Event < ApplicationRecord
   private
 
   def default_title
-    @title = I18n.t('calendars.events.no_title')
+    self.title = I18n.t('calendars.events.no_title')
   end
 
   def send_notify
+    return
     if exception_type.nil?
       attendees.each do |attendee|
         argv = {event_id: id, user_id: attendee.user_id, current_user_id: user_id}
@@ -151,6 +152,7 @@ class Event < ApplicationRecord
   end
 
   def send_email_delete_no_repeat_event
+    return
     attendees.each do |attendee|
       EmailWorker.perform_async argv_params(attendee.user_id)
     end

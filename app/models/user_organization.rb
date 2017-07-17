@@ -15,6 +15,7 @@ class UserOrganization < ApplicationRecord
   private
 
   def send_invitation
+    return
     UserMailer.invite_to_join_organization(user_id, organization_id).deliver
   end
 

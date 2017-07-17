@@ -15,7 +15,6 @@ module Events
         ActiveRecord::Base.transaction do
           make_and_assign_attendees
           @event.save!
-          NotificationWorker.perform_async @event.id
           make_activity @event.owner, @event, :create
         end
       rescue ActiveRecord::RecordInvalid => exception
