@@ -1,0 +1,66 @@
+<%= form_for resource, as: resource_name, url: registration_path(resource_name),
+  html: {method: :put} do |f| %>
+
+  <%= devise_error_messages! %>
+
+  <%= f.hidden_field :current_password, value: User.current_password %>
+
+  <div class="field col-50">
+    <div class="field-name">
+      <%= f.label :password %>
+    </div>
+    <div class="form">
+      <%= f.password_field :password, autocomplete: :off,
+        required: true, class: "form-control" %>
+    </div>
+  </div>
+  <div class="field col-50">
+    <div class="field-name">
+      <%= f.label :password_confirmation %>
+    </div>
+    <div class="form">
+      <%= f.password_field :password_confirmation, autocomplete: :off,
+        required: true, class: "form-control" %>
+    </div>
+  </div>
+
+  <%= f.fields_for :setting do |ff| %>
+    <div class="field col-50">
+      <div class="field-name">
+        <%= ff.label :timezone_name %>
+      </div>
+      <div class="form">
+        <%= ff.time_zone_select :timezone_name, nil, {},
+          {include_blank: true, class: "form-control timezone-select"} %>
+      </div>
+    </div>
+
+    <div class="field col-50">
+      <div class="field-name">
+        <%= ff.label :default_view, t(".calender_default_view") %>
+      </div>
+      <div class="form">
+        <%= ff.select(:default_view, ["calendar", "scheduler"], {},
+          {include_blank: false, class: "form-control calendar-default-view"}) %>
+      </div>
+    </div>
+
+    <div class="field col-50">
+      <div class="field-name">
+        <%= ff.label :country %>
+      </div>
+      <div class="form">
+        <%= ff.country_select :country, {},
+          {
+            include_blank: true,
+            autocomplete: :off,
+            class: "form-control country-select"
+          } %>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="action_container">
+    <%= f.submit t(".update"), class: "btn btn-primary" %>
+  </div>
+<% end %>

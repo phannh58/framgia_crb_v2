@@ -2,6 +2,8 @@ class User < ApplicationRecord
   extend FriendlyId
   include UserAdmin
 
+  cattr_accessor :current_password
+
   friendly_id :name, use: %i(slugged finders)
 
   devise :database_authenticatable, :rememberable, :trackable, :validatable,
@@ -81,7 +83,12 @@ class User < ApplicationRecord
 
       if user.new_record?
         user.password = Devise.friendly_token[0, 20]
+        User.current_password = user.password
+        user.assign_attributes changed_password: false
         user.build_setting timezone_name: ActiveSupport::TimeZone.all.sample.name
+      elsif !user.changed_password?
+        user.password = Devise.friendly_token[0, 20]
+        User.current_password = user.password
       end
       user.save
       user
