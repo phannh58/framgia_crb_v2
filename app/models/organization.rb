@@ -1,5 +1,7 @@
 class Organization < ApplicationRecord
   extend FriendlyId
+  include OrganizationAdmin
+
   friendly_id :name, use: [:slugged, :finders]
 
   mount_uploader :logo, ImageUploader
