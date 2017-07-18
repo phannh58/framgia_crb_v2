@@ -32,6 +32,7 @@ Rails.application.routes.draw do
     root "home#show", as: :unauthenticated_root
   end
 
+ resources :share_calendars, only: %(new)
   resources :search, only: %i(index)
   resources :users, only: %i(show) do
     collection do
